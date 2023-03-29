@@ -20,6 +20,27 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import acmecollege.rest.serializer.SecurityRoleSerializer;
+
 @SuppressWarnings("unused")
 
 /**
@@ -27,18 +48,37 @@ import java.util.Set;
  */
 
 //TODO - Make this into JPA entity and add all the necessary annotations
+@Entity
+@Table(name = "security_user")
+@NamedQuery(name = SecurityUser.USER_BY_NAME, query = "SELECT s FROM SecurityUser s left JOIN FETCH s.roles where s.username = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
+    
+    public static final String USER_BY_NAME = "SecurityUser.findAll";
 
+    @Id
+    @Column(name = "user_id", nullable = false)
     protected int id;
     
+    @Basic(optional = false)
+    @Column(name = "username", nullable = false, length = 100)
     protected String username;
     
+    @Basic(optional = false)
+    @Column(name = "password_hash", nullable = false, length = 256)
     protected String pwHash;
     
-    protected Student student;
     
+    @OneToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    protected Student student;
+ 
+    //TODO need to verify this Might not be what is expected.
+    @ManyToMany
+    @JoinTable(name = "user_has_role",
+    			joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "user_id"),
+    			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
     protected Set<SecurityRole> roles = new HashSet<SecurityRole>();
 
     public SecurityUser() {
@@ -70,6 +110,7 @@ public class SecurityUser implements Serializable, Principal {
     }
 
     // TODO SU01 - Setup custom JSON serializer
+    @JsonSerialize(using = SecurityRoleSerializer.class)
     public Set<SecurityRole> getRoles() {
         return roles;
     }

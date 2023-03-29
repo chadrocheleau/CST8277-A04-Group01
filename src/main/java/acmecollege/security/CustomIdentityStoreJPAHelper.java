@@ -28,6 +28,7 @@ import acmecollege.entity.SecurityRole;
 import acmecollege.entity.SecurityUser;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -46,6 +47,14 @@ public class CustomIdentityStoreJPAHelper {
     public SecurityUser findUserByName(String username) {
         LOG.debug("find a SecurityUser by name = {}", username);
         SecurityUser user = null;
+        TypedQuery<SecurityUser> userByNameQuery;
+        try {
+        	userByNameQuery = em.createNamedQuery(SecurityUser.USER_BY_NAME, SecurityUser.class);
+        	userByNameQuery.setParameter("param1", username);
+        	user = userByNameQuery.getSingleResult();
+        } catch (NoResultException e) {
+        	LOG.debug("Couldn't find a SecurityUser by name = {}", username );
+        }
         /* TODO CISJPAH01 - 
          *  Call the entity manager's createNamedQuery() method to call a named query on SecurityUser
          *  The named query should be labeled "SecurityUser.userByName" and accepts a parameter called "param1"

@@ -35,6 +35,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * The persistent class for the student_club database table.
@@ -47,7 +50,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NamedQuery(name = StudentClub.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(sc) FROM StudentClub sc where sc.name = :param1")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(columnDefinition = "bit(1)", name = "academic", discriminatorType = DiscriminatorType.INTEGER)
+
 //TODO SC01 - Add in JSON annotations to indicate different sub-classes of StudentClub
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+				include = JsonTypeInfo.As.PROPERTY,
+				property = "club_type")
+@JsonSubTypes({
+	@Type(value = AcademicStudentClub.class, name = "Academic"),
+	@Type(value = NonAcademicStudentClub.class, name = "Non-Academic")
+})
 public abstract class StudentClub extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 

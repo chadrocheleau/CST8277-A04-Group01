@@ -63,7 +63,7 @@ public class Student extends PojoBase implements Serializable {
 
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "student")
 	private Set<CourseRegistration> courseRegistrations = new HashSet<>();
-
+	
 	public String getFirstName() {
 		return firstName;
 	}

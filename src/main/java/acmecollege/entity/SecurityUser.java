@@ -70,8 +70,8 @@ public class SecurityUser implements Serializable, Principal {
     protected String pwHash;
     
     
-    @OneToOne
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @OneToOne(optional = true)
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = true)
     protected Student student;
  
     //TODO need to verify this Might not be what is expected.

@@ -27,6 +27,8 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -58,6 +60,7 @@ public class SecurityUser implements Serializable, Principal {
     public static final String USER_BY_NAME = "SecurityUser.findAll";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
     protected int id;
     
@@ -75,7 +78,7 @@ public class SecurityUser implements Serializable, Principal {
     protected Student student;
  
     //TODO need to verify this Might not be what is expected.
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinTable(name = "user_has_role",
     			joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "user_id"),
     			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))

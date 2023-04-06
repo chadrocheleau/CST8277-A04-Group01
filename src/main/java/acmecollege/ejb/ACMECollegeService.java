@@ -44,6 +44,7 @@ import java.util.Set;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -205,7 +206,7 @@ public class ACMECollegeService implements Serializable {
         return specificStudentClubQuery.getSingleResult();
     }
     
-    // These methods are more generic.
+    // ********** Generic Methods to be used for any type of entity *********************
 
     public <T> List<T> getAll(Class<T> entity, String namedQuery) {
         TypedQuery<T> allQuery = em.createNamedQuery(namedQuery, entity);
@@ -213,9 +214,33 @@ public class ACMECollegeService implements Serializable {
     }
     
     public <T> T getById(Class<T> entity, String namedQuery, int id) {
-        TypedQuery<T> allQuery = em.createNamedQuery(namedQuery, entity);
-        allQuery.setParameter(PARAM1, id);
-        return allQuery.getSingleResult();
+    	T returnedEntity = null;
+        TypedQuery<T> entityQuery = em.createNamedQuery(namedQuery, entity);
+        entityQuery.setParameter(PARAM1, id);
+        
+        try {
+        	returnedEntity = entityQuery.getSingleResult();
+        } catch (NoResultException e) {
+        	LOG.debug("Entity not found with ID: " + id);
+        }
+        
+        return returnedEntity;
+    }
+    
+    @Transactional
+    public <T> T persistEntity(T entity) {
+        em.persist(entity);
+        return entity;
+    }
+    
+    @Transactional
+    public <T> T deleteById(Class<T> entityClass, String namedQuery, int id) {
+    	T entityToDelete = getById(entityClass, namedQuery, id);
+    	if (entityToDelete != null) {
+    		em.refresh(entityToDelete);
+            em.remove(entityToDelete);
+    	}
+    	return entityToDelete;
     }
 
     @Transactional
@@ -277,6 +302,18 @@ public class ACMECollegeService implements Serializable {
         allClubMembershipQuery.setParameter(PARAM1, cmId);
         return allClubMembershipQuery.getSingleResult();
     }
+    
+    @Transactional
+    public <T> Professor updateProfessorById(Class<T> entityClass, Professor entityWithUpdates,  String namedQuery, int id) {
+    	Professor entityToUpdate = (Professor) getById(entityClass, namedQuery, id);
+    	if (entityToUpdate != null) {
+    		entityToUpdate.setProfessor(entityWithUpdates.getFirstName(), entityWithUpdates.getLastName(), entityWithUpdates.getDepartment());
+            em.merge(entityToUpdate);  
+            em.flush();
+    	}
+        return entityToUpdate;
+    }
+
 
     @Transactional
     public ClubMembership updateClubMembership(int id, ClubMembership clubMembershipWithUpdates) {

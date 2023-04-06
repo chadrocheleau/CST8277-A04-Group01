@@ -35,6 +35,7 @@ import org.apache.logging.log4j.Logger;
 
 
 import acmecollege.ejb.ACMECollegeService;
+import acmecollege.ejb.ProfessorService;
 import acmecollege.entity.Professor;
 
 
@@ -54,7 +55,7 @@ public class ProfessorResource {
 	private static final Logger LOG = LogManager.getLogger();
 
 	@EJB
-	protected ACMECollegeService service;
+	protected ProfessorService service;
 
 	@Inject
 	protected SecurityContext sc;
@@ -97,7 +98,7 @@ public class ProfessorResource {
 	public Response updateProfessor(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Professor updateProfessor) {
 		Professor updatedProf = null;
 		Response response = null;
-		updatedProf = service.updateProfessorById(Professor.class, updateProfessor, Professor.QUERY_PROFESSOR_BY_ID, id);
+		updatedProf = service.updateProfessorById(updateProfessor,  id);
 		response = Response.status(updatedProf == null ? Status.NOT_FOUND : Status.OK).entity(updatedProf).build();
 		return response;
 	}

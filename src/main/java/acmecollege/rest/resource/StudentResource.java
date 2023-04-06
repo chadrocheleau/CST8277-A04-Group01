@@ -44,7 +44,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.soteria.WrappingCallerPrincipal;
 
-import acmecollege.ejb.ACMECollegeService;
+//import acmecollege.ejb.ACMECollegeService;
+import acmecollege.ejb.StudentService;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
@@ -57,7 +58,7 @@ public class StudentResource {
     private static final Logger LOG = LogManager.getLogger();
 
     @EJB
-    protected ACMECollegeService service;
+    protected StudentService service;
 
     @Inject
     protected SecurityContext sc;
@@ -112,13 +113,24 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	
+    	Student deletedStudent = null;
     	Response response = null;
-    	service.deleteStudentById(id);
-    	response = Response.status(Status.ACCEPTED).build();
+    	deletedStudent = service.deleteStudentById(id);
+    	response = Response.ok(deletedStudent).build();
     	return response;
     }
 
+    @PUT
+	@RolesAllowed({ADMIN_ROLE})
+	@Path(RESOURCE_PATH_ID_PATH)
+	public Response updateStudent(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Student updateStudent) {
+		Student updatedStudent = null;
+		Response response = null;
+		updatedStudent = service.updateStudentById(id,  updateStudent);
+		response = Response.status(updatedStudent == null ? Status.NOT_FOUND : Status.OK).entity(updatedStudent).build();
+		return response;
+	}
+    
     @PUT
     @RolesAllowed({ADMIN_ROLE})
     @Path(STUDENT_COURSE_PROFESSOR_RESOURCE_PATH)

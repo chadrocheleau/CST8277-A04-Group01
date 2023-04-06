@@ -38,7 +38,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import acmecollege.ejb.ACMECollegeService;
+//import acmecollege.ejb.ACMECollegeService;
+import acmecollege.ejb.StudentClubService;
 import acmecollege.entity.StudentClub;
 import acmecollege.entity.ClubMembership;
 
@@ -50,7 +51,7 @@ public class StudentClubResource {
     private static final Logger LOG = LogManager.getLogger();
 
     @EJB
-    protected ACMECollegeService service;
+    protected StudentClubService service;
 
     @Inject
     protected SecurityContext sc;
@@ -92,7 +93,7 @@ public class StudentClubResource {
     @POST
     public Response addStudentClub(StudentClub newStudentClub) {
         LOG.debug("Adding a new student club = {}", newStudentClub);
-        if (service.isDuplicated(newStudentClub)) {
+        if (service.isDuplicated(newStudentClub, StudentClub.IS_DUPLICATE_QUERY_NAME, newStudentClub.getName())) {
             HttpErrorResponse err = new HttpErrorResponse(Status.CONFLICT.getStatusCode(), "Entity already exists");
             return Response.status(Status.CONFLICT).entity(err).build();
         }

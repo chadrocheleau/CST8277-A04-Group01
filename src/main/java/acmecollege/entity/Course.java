@@ -70,7 +70,7 @@ public class Course extends PojoBase implements Serializable {
 	@Column(name = "online",  nullable = false)
 	private byte online;
 
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "course")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "course")
 	private Set<CourseRegistration> courseRegistrations = new HashSet<>();
 
 	public Course() {

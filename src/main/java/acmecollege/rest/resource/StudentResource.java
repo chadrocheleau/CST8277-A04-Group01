@@ -1,15 +1,14 @@
 /**
- * File:  PersonResource.java Course materials (23W) CST 8277
+ * File:  StudentResource.java Course materials (23W) CST 8277
  *
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 01
+ *   041026625, Chad, Rocheleau (as from ACSIS)
+ *   41020857, Lucas, Ross (as from ACSIS)
+ *   041028658, Jacob, Scott (as from ACSIS)
  * 
  */
 package acmecollege.rest.resource;
@@ -67,7 +66,7 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response getStudents() {
         LOG.debug("retrieving all students ...");
-        List<Student> students = service.getAllStudents();
+        List<Student> students = service.getAll(Student.class, Student.ALL_STUDENTS_QUERY_NAME);
         Response response = Response.ok(students).build();
         return response;
     }
@@ -81,7 +80,7 @@ public class StudentResource {
         Student student = null;
 
         if (sc.isCallerInRole(ADMIN_ROLE)) {
-            student = service.getStudentById(id);
+            student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
             response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(student).build();
         } else if (sc.isCallerInRole(USER_ROLE)) {
             WrappingCallerPrincipal wCallerPrincipal = (WrappingCallerPrincipal) sc.getCallerPrincipal();
@@ -100,44 +99,46 @@ public class StudentResource {
 
     @POST
     @RolesAllowed({ADMIN_ROLE})
-    public Response addPerson(Student newStudent) {
+    public Response addStudent(Student newStudent) {
         Response response = null;
-        Student newStudentWithIdTimestamps = service.persistStudent(newStudent);
+        Student newStudentWithIdTimestamps = service.persistEntity(newStudent);
         // Build a SecurityUser linked to the new student
         service.buildUserForNewStudent(newStudentWithIdTimestamps);
         response = Response.ok(newStudentWithIdTimestamps).build();
         return response;
     }
     
+    @PUT
+   	@RolesAllowed({ADMIN_ROLE})
+   	@Path(RESOURCE_PATH_ID_PATH)
+   	public Response updateStudent(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Student updateStudent) {
+   		Student updatedStudent = null;
+   		Response response = null;
+   		updatedStudent = service.updateStudentById(id,  updateStudent);
+   		response = Response.status(updatedStudent == null ? Status.NOT_FOUND : Status.OK).entity(updatedStudent).build();
+   		return response;
+   	}
+       
+       @PUT
+       @RolesAllowed({ADMIN_ROLE})
+       @Path(STUDENT_COURSE_PROFESSOR_RESOURCE_PATH)
+       public Response updateProfessorForStudentCourse(@PathParam("studentId") int studentId, @PathParam("courseId") int courseId, Professor newProfessor) {
+           Response response = null;
+           Professor professor = service.setProfessorForStudentCourse(studentId, courseId, newProfessor);
+           response = Response.ok(professor).build();
+           return response;
+       }
+       
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
     	Student deletedStudent = null;
     	Response response = null;
-    	deletedStudent = service.deleteStudentById(id);
+    	deletedStudent = service.deleteStudentById( id);
     	response = Response.ok(deletedStudent).build();
     	return response;
     }
 
-    @PUT
-	@RolesAllowed({ADMIN_ROLE})
-	@Path(RESOURCE_PATH_ID_PATH)
-	public Response updateStudent(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Student updateStudent) {
-		Student updatedStudent = null;
-		Response response = null;
-		updatedStudent = service.updateStudentById(id,  updateStudent);
-		response = Response.status(updatedStudent == null ? Status.NOT_FOUND : Status.OK).entity(updatedStudent).build();
-		return response;
-	}
-    
-    @PUT
-    @RolesAllowed({ADMIN_ROLE})
-    @Path(STUDENT_COURSE_PROFESSOR_RESOURCE_PATH)
-    public Response updateProfessorForStudentCourse(@PathParam("studentId") int studentId, @PathParam("courseId") int courseId, Professor newProfessor) {
-        Response response = null;
-        Professor professor = service.setProfessorForStudentCourse(studentId, courseId, newProfessor);
-        response = Response.ok(professor).build();
-        return response;
-    }
+   
 }

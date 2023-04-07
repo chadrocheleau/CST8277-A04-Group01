@@ -5,10 +5,10 @@
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
  * 
- * Updated by:  Group NN
+ * Updated by:  Group 01
  *   041026625, Chad, Rocheleau (as from ACSIS)
  *   41020857, Lucas, Ross (as from ACSIS)
- *   studentId, Jacob, Scott (as from ACSIS)
+ *   041028658, Jacob, Scott (as from ACSIS)
  * 
  */
 package acmecollege.rest.resource;
@@ -20,7 +20,6 @@ import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -34,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-import acmecollege.ejb.ACMECollegeService;
 import acmecollege.ejb.ProfessorService;
 import acmecollege.entity.Professor;
 

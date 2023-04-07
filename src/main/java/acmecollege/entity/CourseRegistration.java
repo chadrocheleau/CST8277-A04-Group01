@@ -5,11 +5,10 @@
  * @author Shariar (Shawn) Emami
  * @date August 28, 2022
  * 
- * Updated by:  Group NN
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
- *   studentId, firstName, lastName (as from ACSIS)
+ * Updated by:  Group 01
+ *   041026625, Chad, Rocheleau (as from ACSIS)
+ *   41020857, Lucas, Ross (as from ACSIS)
+ *   041028658, Jacob, Scott (as from ACSIS)
  *   
  */
 package acmecollege.entity;
@@ -49,16 +48,16 @@ public class CourseRegistration extends PojoBaseCompositeKey<CourseRegistrationP
 	private CourseRegistrationPK id;
 
 	@MapsId("studentId")
-	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE, optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
 	private Student student;
 
 	@MapsId("courseId")
-	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE, optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "course_id", referencedColumnName = "course_id", nullable = false)
 	private Course course;
 
-	@ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.MERGE, optional = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "professor_id", referencedColumnName = "professor_id", nullable = true)
 	private Professor professor;
 

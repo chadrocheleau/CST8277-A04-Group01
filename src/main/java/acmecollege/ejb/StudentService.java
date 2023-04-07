@@ -1,3 +1,16 @@
+/**
+ * File:  StudentService.java Course materials (23W) CST 8277
+ *
+ * @author Teddy Yap
+ * @author Shariar (Shawn) Emami
+ * @author (original) Mike Norman
+ * 
+ * Updated by:  Group 01
+ *   041026625, Chad, Rocheleau (as from ACSIS)
+ *   41020857, Lucas, Ross (as from ACSIS)
+ *   041028658, Jacob, Scott (as from ACSIS)
+ * 
+ */
 package acmecollege.ejb;
 
 import static acmecollege.utility.MyConstants.DEFAULT_KEY_SIZE;
@@ -36,22 +49,22 @@ public class StudentService extends ACMECollegeService {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public List<Student> getAllStudents() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-        cq.select(cq.from(Student.class));
-        return em.createQuery(cq).getResultList();
-    }
-
-    public Student getStudentById(int id) {
-        return em.find(Student.class, id);
-    }
-
-    @Transactional
-    public Student persistStudent(Student newStudent) {
-        em.persist(newStudent);
-        return newStudent;
-    }
+//	public List<Student> getAllStudents() {
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
+//        cq.select(cq.from(Student.class));
+//        return em.createQuery(cq).getResultList();
+//    }
+//
+//    public Student getStudentById(int id) {
+//        return em.find(Student.class, id);
+//    }
+//
+//    @Transactional
+//    public Student persistStudent(Student newStudent) {
+//        em.persist(newStudent);
+//        return newStudent;
+//    }
 
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {
@@ -114,7 +127,7 @@ public class StudentService extends ACMECollegeService {
      */
     @Transactional
     public Student updateStudentById(int id, Student studentWithUpdates) {
-        Student studentToBeUpdated = getStudentById(id);
+        Student studentToBeUpdated = getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
         if (studentToBeUpdated != null) {
             em.refresh(studentToBeUpdated);
             studentToBeUpdated.setFullName(studentWithUpdates.getFirstName(), studentWithUpdates.getLastName());
@@ -131,7 +144,7 @@ public class StudentService extends ACMECollegeService {
      */
     @Transactional
     public Student deleteStudentById(int id) {
-        Student student = getStudentById(id);
+        Student student = getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
         if (student != null) {
             em.refresh(student);
             

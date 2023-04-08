@@ -18,9 +18,13 @@ import static acmecollege.utility.MyConstants.STUDENT_COURSE_PROFESSOR_RESOURCE_
 import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_ID;
 import static acmecollege.utility.MyConstants.USER_ROLE;
+import static acmecollege.utility.MyConstants.STUDENT_COURSE_LIST_PATH;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -45,6 +49,8 @@ import org.glassfish.soteria.WrappingCallerPrincipal;
 
 //import acmecollege.ejb.ACMECollegeService;
 import acmecollege.ejb.StudentService;
+import acmecollege.entity.Course;
+import acmecollege.entity.CourseRegistration;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
@@ -97,6 +103,7 @@ public class StudentResource {
         return response;
     }
 
+   
     @POST
     @RolesAllowed({ADMIN_ROLE})
     public Response addStudent(Student newStudent) {
@@ -122,7 +129,9 @@ public class StudentResource {
        @PUT
        @RolesAllowed({ADMIN_ROLE})
        @Path(STUDENT_COURSE_PROFESSOR_RESOURCE_PATH)
-       public Response updateProfessorForStudentCourse(@PathParam("studentId") int studentId, @PathParam("courseId") int courseId, Professor newProfessor) {
+       public Response updateProfessorForStudentCourse(@PathParam("studentId") int studentId,
+										    		   @PathParam("courseId") int courseId,
+										    		   Professor newProfessor) {
            Response response = null;
            Professor professor = service.setProfessorForStudentCourse(studentId, courseId, newProfessor);
            response = Response.ok(professor).build();
@@ -139,6 +148,4 @@ public class StudentResource {
     	response = Response.ok(deletedStudent).build();
     	return response;
     }
-
-   
 }

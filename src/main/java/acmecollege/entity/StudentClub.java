@@ -36,6 +36,10 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import acmecollege.rest.serializer.SecurityRoleSerializer;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
@@ -85,6 +89,7 @@ public abstract class StudentClub extends PojoBase implements Serializable {
     }
 
     // Simplify Json body, skip ClubMemberships
+//    @JsonSerialize(using = SecurityRoleSerializer.class)
     @JsonIgnore
     public Set<ClubMembership> getClubMemberships() {
         return clubMemberships;

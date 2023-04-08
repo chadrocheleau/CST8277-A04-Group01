@@ -28,6 +28,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("unused")
 
 /**
@@ -41,12 +43,15 @@ public abstract class PojoBaseCompositeKey<ID extends Serializable> implements S
 	private static final long serialVersionUID = 1L;
 
 	@Version
+	@JsonIgnore
 	protected int version;
 
     @Column(name = "created")
+    @JsonIgnore
 	protected LocalDateTime created;
 
     @Column(name = "updated")
+    @JsonIgnore
 	protected LocalDateTime updated;
 
 	public abstract ID getId();

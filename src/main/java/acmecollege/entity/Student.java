@@ -57,7 +57,7 @@ public class Student extends PojoBase implements Serializable {
     @Column(name = "last_name", nullable = false, length = 50)
 	private String lastName;
 
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "owner")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
 	private Set<MembershipCard> membershipCards = new HashSet<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "student")

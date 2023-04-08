@@ -49,22 +49,7 @@ public class StudentService extends ACMECollegeService {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-//	public List<Student> getAllStudents() {
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-//        cq.select(cq.from(Student.class));
-//        return em.createQuery(cq).getResultList();
-//    }
-//
-//    public Student getStudentById(int id) {
-//        return em.find(Student.class, id);
-//    }
-//
-//    @Transactional
-//    public Student persistStudent(Student newStudent) {
-//        em.persist(newStudent);
-//        return newStudent;
-//    }
+
 
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {

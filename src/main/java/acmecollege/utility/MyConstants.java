@@ -32,8 +32,11 @@ public interface MyConstants {
     public static final String SLASH = "/";
     public static final String REST_APPLICATION_PATH = SLASH + "api" + SLASH + "v1";
     public static final String APPLICATION_CONTEXT_ROOT = SLASH + "rest-acmecollege";
+    // PATH ELEMENTS
     public static final String RESOURCE_PATH_ID_ELEMENT =  "id";
     public static final String RESOURCE_PATH_ID_PATH =  "/{" + RESOURCE_PATH_ID_ELEMENT + "}";
+    public static final String RESOURCE_PATH_STUDENT_ID = "studentId";
+    public static final String RESOURCE_PATH_COURSE_ID = "courseId";
     public static final String CREDENTIAL_RESOURCE_NAME = "credential";
     public static final String STUDENT_RESOURCE_NAME =  "student";
     public static final String COURSE_RESOURCE_NAME = "course";
@@ -45,6 +48,10 @@ public interface MyConstants {
     public static final String COURSE_PROFESSOR_RESOURCE_PATH =
         RESOURCE_PATH_ID_PATH + SLASH + PROFESSOR_SUBRESOURCE_NAME;
     public static final String STUDENT_COURSE_PROFESSOR_RESOURCE_PATH = "/{studentId}/course/{courseId}/professor";
+    public static final String COURSE_STUDENT_PROFESSOR_REG_RESOURCE_PATH = "course/{courseId}/student/{studentId}/professor/{professorId}";
+    public static final String COURSE_STUDENT_ID_PATH = "/{studentId}/course/{courseId}";
+    public static final String STUDENT_COURSE_LIST_PATH = "course/list/{studentId}";
+    public static final String COURSE_STUDENT_LIST_PATH = "student/list/{courseId}";
 
     //Security constants
     public static final String USER_ROLE = "USER_ROLE";

@@ -41,6 +41,8 @@ import javax.persistence.Table;
 @Table(name = "course_registration")
 @Access(AccessType.FIELD)
 @NamedQuery(name = "CourseRegistration.findAll", query = "SELECT cr FROM CourseRegistration cr")
+@NamedQuery(name = "CourseRegistration.findCoursesForStudent", 
+					query = "Select cr FROM CourseRegistration cr WHERE cr.id.studentId = :param1 ")
 public class CourseRegistration extends PojoBaseCompositeKey<CourseRegistrationPK> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

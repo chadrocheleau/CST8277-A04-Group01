@@ -83,11 +83,26 @@ public class ACMECollegeService implements Serializable {
     
     // ********** Generic Methods to be used for any type of entity *********************
 
+    /**
+     * 
+     * @param <T>
+     * @param entity
+     * @param namedQuery
+     * @return
+     */
     public <T> List<T> getAll(Class<T> entity, String namedQuery) {
         TypedQuery<T> allQuery = em.createNamedQuery(namedQuery, entity);
         return allQuery.getResultList();
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param entity
+     * @param namedQuery
+     * @param id
+     * @return
+     */
     public <T> T getById(Class<T> entity, String namedQuery, int id) {
     	T returnedEntity = null;
         TypedQuery<T> entityQuery = em.createNamedQuery(namedQuery, entity);
@@ -102,12 +117,26 @@ public class ACMECollegeService implements Serializable {
         return returnedEntity;
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param entity
+     * @return
+     */
     @Transactional
     public <T> T persistEntity(T entity) {
         em.persist(entity);
         return entity;
     }
     
+    /**
+     * 
+     * @param <T>
+     * @param entityClass
+     * @param namedQuery
+     * @param id
+     * @return
+     */
     @Transactional
     public <T> T deleteById(Class<T> entityClass, String namedQuery, int id) {
     	T entityToDelete = getById(entityClass, namedQuery, id);
@@ -121,7 +150,14 @@ public class ACMECollegeService implements Serializable {
    
     
     // Please study & use the methods below in your test suites
-    
+    /**
+     * 
+     * @param <T>
+     * @param newEntity
+     * @param namedQuery
+     * @param parameter
+     * @return
+     */
     public <T> boolean isDuplicated(T newEntity, String namedQuery, String parameter) {
         TypedQuery<Long> entityQuery = em.createNamedQuery(namedQuery, Long.class);
         entityQuery.setParameter(PARAM1, parameter);

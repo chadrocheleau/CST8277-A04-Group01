@@ -31,6 +31,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("unused")
 
 /**
@@ -48,14 +50,17 @@ public abstract class PojoBase implements Serializable {
 	protected int id;
 
     @Version
+    @JsonIgnore
 	protected int version;
 
     @Basic(optional = false)
     @Column(name = "created")
+    @JsonIgnore
 	protected LocalDateTime created;
 
     @Basic(optional = false)
     @Column(name = "updated")
+    @JsonIgnore
 	protected LocalDateTime updated;
 
 	public int getId() {

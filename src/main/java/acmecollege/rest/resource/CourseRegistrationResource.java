@@ -21,7 +21,7 @@ import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_ID;
 import static acmecollege.utility.MyConstants.STUDENT_COURSE_LIST_PATH;
 import static acmecollege.utility.MyConstants.USER_ROLE;
-import static acmecollege.utility.MyConstants.COURSE_STUDENT_ID_PATH;
+import static acmecollege.utility.MyConstants.COURSE_REG_COURSE_STUDENT_ID_PATH;
 import static acmecollege.utility.MyConstants.COURSE_STUDENT_LIST_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_COURSE_ID;
 import java.util.HashSet;
@@ -121,7 +121,7 @@ public class CourseRegistrationResource {
      */
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
-    @Path(COURSE_STUDENT_ID_PATH)
+    @Path(COURSE_REG_COURSE_STUDENT_ID_PATH)
     public Response deleteCourseRegistrationById(@PathParam("studentId") int studentId,
     											 @PathParam("courseId") int courseId) {
     	CourseRegistration deletedRegistration = null;
@@ -131,7 +131,8 @@ public class CourseRegistrationResource {
     	
     	Response response = null;
     	deletedRegistration = service.deleteRegistrationById(id);
-    	response = Response.ok(deletedRegistration).build();
+    	response = Response.status(deletedRegistration == null ? Status.NOT_FOUND : Status.OK).entity(deletedRegistration).build();
+//    	response = Response.ok(deletedRegistration).build();
     	return response;
     }
     

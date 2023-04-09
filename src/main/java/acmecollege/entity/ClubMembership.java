@@ -30,6 +30,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("unused")
 
 /**
@@ -50,6 +52,7 @@ public class ClubMembership extends PojoBase implements Serializable {
 	@JoinColumn(name = "club_id", referencedColumnName = "club_id")
 	private StudentClub club;
 
+	@JsonIgnore
 	@OneToOne(mappedBy = "membership")
 	private MembershipCard card;
 

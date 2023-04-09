@@ -20,9 +20,14 @@ import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
 import acmecollege.entity.ClubMembership;
+import acmecollege.entity.CourseRegistration;
+import acmecollege.entity.CourseRegistrationPK;
+import acmecollege.entity.MembershipCard;
+import acmecollege.entity.Student;
+import acmecollege.entity.StudentClub;
 
 @Singleton
-public class CubMembershipService extends ACMECollegeService {
+public class ClubMembershipService extends ACMECollegeService {
 
 	/**
 	 * 
@@ -30,8 +35,10 @@ public class CubMembershipService extends ACMECollegeService {
 	private static final long serialVersionUID = 1L;
 	
 	@Transactional
-    public ClubMembership persistClubMembership(ClubMembership newClubMembership) {
-        em.persist(newClubMembership);
+    public ClubMembership persistClubMembership(ClubMembership newClubMembership, int scId) {
+		newClubMembership.setStudentClub(em.merge(getById(StudentClub.class, StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, scId)));
+		
+		em.persist(newClubMembership);
         return newClubMembership;
     }
 
@@ -51,6 +58,19 @@ public class CubMembershipService extends ACMECollegeService {
         }
         return clubMembershipToBeUpdated;
     }
+    
+    @Transactional
+	public ClubMembership deleteClubMembership(ClubMembership membership) {
+    	
+    	MembershipCard card = membership.getCard();
+    	card.setClubMembership(null);
+    	membership.setCard(null);
+        em.merge(card);
+        em.merge(membership);
+		em.remove(membership);
+		em.flush();
+		return membership;
+	}
     
 
 }

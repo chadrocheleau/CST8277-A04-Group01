@@ -59,8 +59,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 				include = JsonTypeInfo.As.PROPERTY,
 				property = "club_type")
 @JsonSubTypes({
-	@Type(value = AcademicStudentClub.class, name = "Academic"),
-	@Type(value = NonAcademicStudentClub.class, name = "Non-Academic")
+	@Type(value = AcademicStudentClub.class, name = "academic"),
+	@Type(value = NonAcademicStudentClub.class, name = "non-academic")
 })
 public abstract class StudentClub extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;

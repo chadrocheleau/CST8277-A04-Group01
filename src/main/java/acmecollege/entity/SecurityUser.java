@@ -20,6 +20,19 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
 @SuppressWarnings("unused")
 
 /**
@@ -27,20 +40,35 @@ import java.util.Set;
  */
 
 //TODO - Make this into JPA entity and add all the necessary annotations
+@Entity
+@Table(name="security_user")
+@NamedQuery(name = "SecurityUser.userByName", query = "SELECT u FROM SecurityUser u WHERE u.username = :param1")
+@NamedQuery(name = "SecurityUser.findByStudent", query = "SELECT u FROM SecurityUser u WHERE u.student = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column(name="user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
     
+    @Column(unique=true)
     protected String username;
     
+    @Column(name = "password_hash")
     protected String pwHash;
     
+    @OneToOne(optional = true)
     protected Student student;
     
+    @JoinTable(
+            name = "user_has_role",
+            joinColumns = @JoinColumn(referencedColumnName = "user_id", name = "user_id"),
+            inverseJoinColumns = @JoinColumn(referencedColumnName = "role_id", name = "role_id"))
+    @ManyToMany
     protected Set<SecurityRole> roles = new HashSet<SecurityRole>();
-
+  
     public SecurityUser() {
         super();
     }

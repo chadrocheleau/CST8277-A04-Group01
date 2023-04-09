@@ -34,6 +34,8 @@ import javax.persistence.MapsId;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @SuppressWarnings("unused")
 /**
  * The persistent class for the course_registration database table.

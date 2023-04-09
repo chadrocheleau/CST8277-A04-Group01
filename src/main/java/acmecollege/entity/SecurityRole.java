@@ -19,20 +19,38 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
 @SuppressWarnings("unused")
 
 /**
  * Role class used for (JSR-375) Java EE Security authorization/authentication
  */
 //TODO SR01 - Make this into JPA entity and add all necessary annotations
+@Entity
+@Table(name="security_role")
+@NamedQuery(name = "SecurityRole.findByName", query = "SELECT r FROM SecurityRole r WHERE r.roleName = :param1")
 public class SecurityRole implements Serializable {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
-
+    @Id
+    @Column(name="role_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
     
+    @Column(name="name")
     protected String roleName;
     
+    @ManyToMany(mappedBy="roles")
     protected Set<SecurityUser> users = new HashSet<SecurityUser>();
 
     public SecurityRole() {

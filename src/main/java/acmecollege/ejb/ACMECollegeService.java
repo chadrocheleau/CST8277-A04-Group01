@@ -81,43 +81,6 @@ public class ACMECollegeService implements Serializable {
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
 
-    public List<Student> getAllStudents() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Student> cq = cb.createQuery(Student.class);
-        cq.select(cq.from(Student.class));
-        return em.createQuery(cq).getResultList();
-    }
-
-    public Student getStudentById(int id) {
-        return em.find(Student.class, id);
-    }
-
-    @Transactional
-    public Student persistStudent(Student newStudent) {
-        em.persist(newStudent);
-        return newStudent;
-    }
-
-    @Transactional
-    public void buildUserForNewStudent(Student newStudent) {
-        SecurityUser userForNewStudent = new SecurityUser();
-        userForNewStudent.setUsername(
-            DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName());
-        Map<String, String> pbAndjProperties = new HashMap<>();
-        pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
-        pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
-        pbAndjProperties.put(PROPERTY_SALT_SIZE, DEFAULT_SALT_SIZE);
-        pbAndjProperties.put(PROPERTY_KEY_SIZE, DEFAULT_KEY_SIZE);
-        pbAndjPasswordHash.initialize(pbAndjProperties);
-        String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
-        userForNewStudent.setPwHash(pwHash);
-        userForNewStudent.setStudent(newStudent);
-        SecurityRole userRole = /* TODO ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */ null;
-        userForNewStudent.getRoles().add(userRole);
-        userRole.getUsers().add(userForNewStudent);
-        em.persist(userForNewStudent);
-    }
-
     @Transactional
     public Professor setProfessorForStudentCourse(int studentId, int courseId, Professor newProfessor) {
         Student studentToBeUpdated = em.find(Student.class, studentId);
@@ -143,44 +106,7 @@ public class ACMECollegeService implements Serializable {
         else return null;  // Student doesn't exists
     }
 
-    /**
-     * To update a student
-     * 
-     * @param id - id of entity to update
-     * @param studentWithUpdates - entity with updated information
-     * @return Entity with updated information
-     */
-    @Transactional
-    public Student updateStudentById(int id, Student studentWithUpdates) {
-        Student studentToBeUpdated = getStudentById(id);
-        if (studentToBeUpdated != null) {
-            em.refresh(studentToBeUpdated);
-            em.merge(studentWithUpdates);
-            em.flush();
-        }
-        return studentToBeUpdated;
-    }
-
-    /**
-     * To delete a student by id
-     * 
-     * @param id - student id to delete
-     */
-    @Transactional
-    public void deleteStudentById(int id) {
-        Student student = getStudentById(id);
-        if (student != null) {
-            em.refresh(student);
-            TypedQuery<SecurityUser> findUser = 
-                /* TODO ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
-                   so that when we remove it, the relationship from SECURITY_USER table
-                   is not dangling
-                */ null;
-            SecurityUser sUser = findUser.getSingleResult();
-            em.remove(sUser);
-            em.remove(student);
-        }
-    }
+    
     
     public List<StudentClub> getAllStudentClubs() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -208,6 +134,12 @@ public class ACMECollegeService implements Serializable {
         TypedQuery<T> allQuery = em.createNamedQuery(namedQuery, entity);
         allQuery.setParameter(PARAM1, id);
         return allQuery.getSingleResult();
+    }
+    
+    @Transactional
+    public <T> T persistEntity(T entity) {
+        em.persist(entity);
+        return entity;
     }
 
     @Transactional

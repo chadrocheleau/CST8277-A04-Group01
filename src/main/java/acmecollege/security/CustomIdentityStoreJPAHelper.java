@@ -30,6 +30,7 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 
@@ -56,6 +57,13 @@ public class CustomIdentityStoreJPAHelper {
          *         requests will fail, none of the REST'ful endpoints will work.
          *  
          */
+        try {
+            TypedQuery<SecurityUser> query = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class);
+            query.setParameter(PARAM1, username);
+            user = query.getSingleResult();
+        } catch (NoResultException e) {
+            LOG.error("Error finding user by name {}", username);
+        }
         return user;
     }
 

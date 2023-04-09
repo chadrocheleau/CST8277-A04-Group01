@@ -20,6 +20,7 @@ import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 import static acmecollege.utility.MyConstants.USER_ROLE;
+import static acmecollege.utility.MyConstants.STUDENT_UPDATE_RESOURCE_PATH;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,6 +46,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.soteria.WrappingCallerPrincipal;
 
 import acmecollege.ejb.ACMECollegeService;
+import acmecollege.ejb.StudentService;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
@@ -56,7 +59,7 @@ public class StudentResource {
     private static final Logger LOG = LogManager.getLogger();
 
     @EJB
-    protected ACMECollegeService service;
+    protected StudentService service;
 
     @Inject
     protected SecurityContext sc;
@@ -65,7 +68,7 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response getStudents() {
         LOG.debug("retrieving all students ...");
-        List<Student> students = service.getAllStudents();
+        List<Student> students = service.getAll(Student.class, Student.ALL_STUDENTS_QUERY_NAME);
         Response response = Response.ok(students).build();
         return response;
     }
@@ -79,7 +82,7 @@ public class StudentResource {
         Student student = null;
 
         if (sc.isCallerInRole(ADMIN_ROLE)) {
-            student = service.getStudentById(id);
+            student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
             response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(student).build();
         } else if (sc.isCallerInRole(USER_ROLE)) {
             WrappingCallerPrincipal wCallerPrincipal = (WrappingCallerPrincipal) sc.getCallerPrincipal();
@@ -100,7 +103,7 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     public Response addPerson(Student newStudent) {
         Response response = null;
-        Student newStudentWithIdTimestamps = service.persistStudent(newStudent);
+        Student newStudentWithIdTimestamps = service.persistEntity(newStudent);
         // Build a SecurityUser linked to the new student
         service.buildUserForNewStudent(newStudentWithIdTimestamps);
         response = Response.ok(newStudentWithIdTimestamps).build();
@@ -115,5 +118,26 @@ public class StudentResource {
         Professor professor = service.setProfessorForStudentCourse(studentId, courseId, newProfessor);
         response = Response.ok(professor).build();
         return response;
+    }
+    
+    @PUT
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response updateStudent(@PathParam(RESOURCE_PATH_ID_ELEMENT) int studentId, Student studentWithUpdates) {
+    	Response response = null;
+    	Student student = service.updateStudentById(studentId, studentWithUpdates);
+    	response = Response.ok(student).build();
+    	return response;
+    }
+    
+    @DELETE
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+    	Response response = null;
+    	Student student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
+    	service.deleteStudentById(id);
+    	response = Response.ok(student).build();
+    	return response;
     }
 }

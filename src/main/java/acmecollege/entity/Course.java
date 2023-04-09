@@ -28,6 +28,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @SuppressWarnings("unused")
 
 /**
@@ -36,11 +38,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "course")
 @NamedQuery(name = Course.ALL_COURSES_QUERY, query = "SELECT c FROM Course c")
+@NamedQuery(name = Course.COURSE_BY_ID_QUERY, query = "SELECT c FROM Course c WHERE c.id = :param1")
 @AttributeOverride(name = "id", column = @Column(name = "course_id"))
 public class Course extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     public static final String ALL_COURSES_QUERY = "Course.findAll";
+    public static final String COURSE_BY_ID_QUERY = "Course.findById";
 
 	@Basic(optional = false)
 	@Column(name = "course_code", nullable = false, length = 7)
@@ -67,6 +71,7 @@ public class Course extends PojoBase implements Serializable {
 	private byte online;
 
 	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "course")
+	@JsonIgnore
 	private Set<CourseRegistration> courseRegistrations = new HashSet<>();
 
 	public Course() {

@@ -64,7 +64,6 @@ public class ClubMembershipService extends ACMECollegeService {
 	public ClubMembership deleteClubMembership(int clubMembershipId) {
     	ClubMembership clubMembership = getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
     	if (clubMembership == null) {return clubMembership;}
-    	
     		MembershipCard card = clubMembership.getCard();
         	card.setClubMembership(null);
         	clubMembership.setCard(null);

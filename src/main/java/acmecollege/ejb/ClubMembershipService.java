@@ -39,6 +39,7 @@ public class ClubMembershipService extends ACMECollegeService {
 		newClubMembership.setStudentClub(em.merge(getById(StudentClub.class, StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, scId)));
 		
 		em.persist(newClubMembership);
+		em.flush();
         return newClubMembership;
     }
 
@@ -60,16 +61,21 @@ public class ClubMembershipService extends ACMECollegeService {
     }
     
     @Transactional
-	public ClubMembership deleteClubMembership(ClubMembership membership) {
+	public ClubMembership deleteClubMembership(int clubMembershipId) {
+    	ClubMembership clubMembership = getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
+    	if (clubMembership == null) {return clubMembership;}
     	
-    	MembershipCard card = membership.getCard();
-    	card.setClubMembership(null);
-    	membership.setCard(null);
-        em.merge(card);
-        em.merge(membership);
-		em.remove(membership);
-		em.flush();
-		return membership;
+    		MembershipCard card = clubMembership.getCard();
+        	card.setClubMembership(null);
+        	clubMembership.setCard(null);
+            em.merge(card);
+            em.merge(clubMembership);
+    		em.remove(clubMembership);
+    		em.flush();
+    		return clubMembership;
+    		
+    	
+    	
 	}
     
 

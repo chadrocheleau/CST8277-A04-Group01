@@ -98,10 +98,10 @@ public class ClubMembershipResource  {
     @Path("/{clubMembershipId}")
     public Response deleteClubMembership(@PathParam("clubMembershipId") int clubMembershipId) {
         LOG.debug("Deleting club membership with id = {}", clubMembershipId);
-        ClubMembership clubMembership = service.getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
         
-        service.deleteClubMembership(clubMembership);
-        Response response = Response.ok(sc).build();
+        
+        ClubMembership deletedMembership = service.deleteClubMembership(clubMembershipId);
+        Response response = Response.ok(deletedMembership).build();
         return response;
     }
 }

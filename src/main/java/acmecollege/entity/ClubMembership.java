@@ -48,7 +48,7 @@ public class ClubMembership extends PojoBase implements Serializable {
     public static final String FIND_ALL = "ClubMembership.findAll";
     public static final String FIND_BY_ID = "ClubMembership.findbyId";    
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne( fetch = FetchType.EAGER)
 	@JoinColumn(name = "club_id", referencedColumnName = "club_id")
 	private StudentClub club;
 

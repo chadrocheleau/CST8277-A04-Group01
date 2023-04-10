@@ -84,8 +84,9 @@ public class CourseRegistrationService extends ACMECollegeService {
 			
 			updatedRegistrations.forEach(registration -> {
 				registration.setProfessor(regProf);
-				em.merge(registration);
+				
 			});
+			em.merge(regProf);
 			em.flush();
 			return regProf;
 		} else {

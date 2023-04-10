@@ -13,11 +13,19 @@
  */
 package acmecollege.ejb;
 
+import static acmecollege.utility.MyConstants.ADMIN_ROLE;
 import static acmecollege.utility.MyConstants.PARAM1;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Singleton;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 import acmecollege.entity.ClubMembership;
 import acmecollege.entity.CourseRegistration;
@@ -54,6 +62,12 @@ public class MembershipCardService extends ACMECollegeService {
         TypedQuery<MembershipCard> membershipCardQuery = em.createNamedQuery(MembershipCard.ID_CARD_QUERY_NAME, MembershipCard.class);
         membershipCardQuery.setParameter(PARAM1, cmId);
         return membershipCardQuery.getSingleResult();
+    }
+    
+    public MembershipCard deleteMembershipCardById(int cardId) {
+    	MembershipCard membershipCard = getById(MembershipCard.class, MembershipCard.ID_CARD_QUERY_NAME, cardId);
+    	em.remove(membershipCard);
+    	return membershipCard;
     }
 
 }

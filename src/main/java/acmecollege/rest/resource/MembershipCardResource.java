@@ -33,6 +33,7 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -134,5 +135,16 @@ public class MembershipCardResource {
     	response = Response.ok(persistedCard).build();
        
         return response;
+    }
+    
+    @DELETE
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deleteMembershipCardById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
+    	MembershipCard deletedMembershipCard = null;
+    	Response response = null;
+    	deletedMembershipCard = service.deleteMembershipCardById(id);
+    	response = Response.ok(deletedMembershipCard).build();
+    	return response;
     }
 }

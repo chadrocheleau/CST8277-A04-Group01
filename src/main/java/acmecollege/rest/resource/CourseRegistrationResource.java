@@ -168,10 +168,11 @@ public class CourseRegistrationResource {
 				registrations.forEach(registration -> {
 					courses.add(registration.getCourse());
 				});
+				response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(courses).build();
 			} else {
 				response = Response.status(Status.NOT_FOUND).build();
 			}
-			response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(courses).build();
+			
 		} else if (sc.isCallerInRole(USER_ROLE)) {
 			WrappingCallerPrincipal wCallerPrincipal = (WrappingCallerPrincipal) sc.getCallerPrincipal();
 			SecurityUser sUser = (SecurityUser) wCallerPrincipal.getWrapped();

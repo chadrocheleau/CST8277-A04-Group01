@@ -127,7 +127,7 @@ public class MembershipCardResource {
     @POST
     @RolesAllowed({ADMIN_ROLE})
     @Path(STUDENT_MEMBERSHIP_CARD_PATH)
-    public Response addCourseRegistration(@PathParam("studentId") int studentId ,
+    public Response addMembershipCard(@PathParam("studentId") int studentId ,
 								    	  @PathParam("clubmembershipId") int clubMembershipId) {
     	Response response = null;
 		

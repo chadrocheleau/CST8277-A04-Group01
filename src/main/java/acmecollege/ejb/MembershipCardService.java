@@ -18,6 +18,11 @@ import static acmecollege.utility.MyConstants.PARAM1;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Singleton;
 import javax.persistence.TypedQuery;
@@ -44,12 +49,22 @@ public class MembershipCardService extends ACMECollegeService {
 	
 	@Transactional
     public MembershipCard persistMembershipCard(int studentId, int clubMembershipId) {
-		
+		Set<MembershipCard> cards = new HashSet<>();
         Student student = getById(Student.class, Student.QUERY_STUDENT_BY_ID, studentId);
 		ClubMembership clubMembership = getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
+		
 		if(student == null || clubMembership == null) {
 			return null;
 		}
+		int clubId = clubMembership.getStudentClub().getId();
+		cards = student.getMembershipCards();
+		
+		Iterator<MembershipCard> cardsIterator = cards.iterator();
+		
+		while (cardsIterator.hasNext()) {
+			if (cardsIterator.next().getMembership().getStudentClub().getId() == clubId) { return null; }
+		}
+		
 		MembershipCard newMembershipCard = new MembershipCard();
 		newMembershipCard.setClubMembership(clubMembership);
 		newMembershipCard.setOwner(student);

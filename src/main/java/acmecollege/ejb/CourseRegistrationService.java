@@ -13,8 +13,13 @@
  */
 package acmecollege.ejb;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.ejb.Singleton;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import acmecollege.entity.Course;
 import acmecollege.entity.CourseRegistration;
@@ -65,5 +70,27 @@ public class CourseRegistrationService extends ACMECollegeService {
 		em.remove(registration);
 		em.flush();
 		return registration;
+	}
+	
+	@Transactional 
+	public Professor setProfessorForCourse(int courseId, int profId) {
+		Course regCourse = getById(Course.class, Course.COURSE_BY_ID_QUERY, courseId);
+		Professor regProf = getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, profId);
+		Set<CourseRegistration> updatedRegistrations = new HashSet<>();
+
+		if (regProf != null && regCourse != null) {
+			// get courseRegistrations and set prof
+			updatedRegistrations = regCourse.getCourseRegistrations();
+			
+			updatedRegistrations.forEach(registration -> {
+				registration.setProfessor(regProf);
+				em.merge(registration);
+			});
+			em.flush();
+			return regProf;
+		} else {
+			return null;
+		}
+		
 	}
 }

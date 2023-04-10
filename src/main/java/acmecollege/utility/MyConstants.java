@@ -50,6 +50,7 @@ public interface MyConstants {
     public static final String STUDENT_COURSE_PROFESSOR_RESOURCE_PATH = "{studentId}/course/{courseId}/professor";
     public static final String COURSE_STUDENT_PROFESSOR_REG_RESOURCE_PATH = "course/{courseId}/student/{studentId}/professor/{professorId}";
     public static final String COURSE_REG_COURSE_STUDENT_ID_PATH = "student/{studentId}/course/{courseId}";
+    public static final String COURSE_REG_COURSE_PROFESSOR_ID_PATH ="course/{courseId}/professor/{professorId}";
     public static final String STUDENT_COURSE_LIST_PATH = "course/list/student/{studentId}";
     public static final String COURSE_STUDENT_LIST_PATH = "student/list/course/{courseId}";
     public static final String CARD_STUDENT_LIST_PATH = "card/list/student/{studentId}";

@@ -24,6 +24,7 @@ import static acmecollege.utility.MyConstants.USER_ROLE;
 import static acmecollege.utility.MyConstants.COURSE_REG_COURSE_STUDENT_ID_PATH;
 import static acmecollege.utility.MyConstants.COURSE_STUDENT_LIST_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_COURSE_ID;
+import static acmecollege.utility.MyConstants.COURSE_REG_COURSE_PROFESSOR_ID_PATH;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -112,6 +114,29 @@ public class CourseRegistrationResource {
 					regProf);
 			response = Response.ok(persistedReg).build();
 		}
+
+		return response;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param courseId        The course Id passed as a parameter from POST request
+	 * @param profId          The professor Id passed as a parameter from POST
+	 *                        request
+	 * @param newRegistration Course Registration details to be used when creating
+	 *                        new course registration
+	 * @return the response
+	 */
+	@PUT
+	@RolesAllowed({ ADMIN_ROLE })
+	@Path(COURSE_REG_COURSE_PROFESSOR_ID_PATH)
+	public Response SetProfessorForCourse(@PathParam("courseId") int courseId, 
+			@PathParam("professorId") int profId) {
+		Response response = null;
+		Professor setProfessor = service.setProfessorForCourse(courseId, profId);
+		response = Response.status(setProfessor == null ? Status.NOT_FOUND : Status.OK)
+				.entity(setProfessor).build();
 
 		return response;
 	}

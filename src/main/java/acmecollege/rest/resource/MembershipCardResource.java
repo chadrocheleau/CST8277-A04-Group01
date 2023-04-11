@@ -23,6 +23,7 @@ import static acmecollege.utility.MyConstants.MEMBERSHIP_CARD_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.CARD_STUDENT_LIST_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_ID;
 import static acmecollege.utility.MyConstants.STUDENT_MEMBERSHIP_CARD_PATH;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_CLUB_ID;
 
 import java.util.HashSet;
 import java.util.List;
@@ -153,9 +154,9 @@ public class MembershipCardResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(STUDENT_MEMBERSHIP_CARD_PATH)
     public Response addMembershipCard(@PathParam("studentId") int studentId ,
-								      @PathParam("clubmembershipId") int clubMembershipId) {
+								      @PathParam(RESOURCE_PATH_STUDENT_CLUB_ID) int scId) {
     	Response response = null;
-		MembershipCard persistedCard = service.persistMembershipCard(studentId, clubMembershipId);
+		MembershipCard persistedCard = service.persistMembershipCard(studentId, scId);
     	response = Response.ok(persistedCard).build();
         return response;
     }

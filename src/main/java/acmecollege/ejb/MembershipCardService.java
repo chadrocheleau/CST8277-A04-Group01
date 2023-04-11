@@ -13,14 +13,17 @@
  */
 package acmecollege.ejb;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.ejb.Singleton;
 import javax.transaction.Transactional;
 import acmecollege.entity.ClubMembership;
+import acmecollege.entity.DurationAndStatus;
 import acmecollege.entity.MembershipCard;
 import acmecollege.entity.Student;
+import acmecollege.entity.StudentClub;
 
 /**
  * This class provides the specialized Services required by the MembershipCardResource. Generic service 
@@ -41,31 +44,30 @@ public class MembershipCardService extends ACMECollegeService {
 	 * @return The MembershipCard that was created or null if the Card was not created.
 	 */
 	@Transactional
-    public MembershipCard persistMembershipCard(int studentId, int clubMembershipId) {
+    public MembershipCard persistMembershipCard(int studentId, int scId) {
 		Set<MembershipCard> cards = new HashSet<>();
         Student student = getById(Student.class, Student.QUERY_STUDENT_BY_ID, studentId);
-		ClubMembership clubMembership = getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
+		StudentClub studentClub = getById(StudentClub.class, StudentClub.STUDENT_CLUB_QUERY_BY_ID, scId);
 		
 		// Don't create MembershipCard if student or clubMembership doesn't exist
-		if(student == null || clubMembership == null) {
+		if(student == null || studentClub == null) {
 			return null;
 		}
-		/**
-		 * The problem here is that if a MembershipCard exists at all with this ClubMembership already
-		 * then a new ClubMembership will need to be generated. This poses two problems.
-		 * When creating a membershipCard we would need to know for which StudentClub it is for
-		 * Since the ClubMembership may need to be created.
-		 */
 		// Don't create MembershipCard if student has a membership card for StudentClub already
-		int clubId = clubMembership.getStudentClub().getId();
 		cards = student.getMembershipCards();
 		Iterator<MembershipCard> cardsIterator = cards.iterator();
 		while (cardsIterator.hasNext()) {
-			if (cardsIterator.next().getMembership().getStudentClub().getId() == clubId) { return null; }
+			if (cardsIterator.next().getMembership().getStudentClub().getId() == scId) { return null; }
 		}
 		// if all is good create the MembershipCard
+		ClubMembership newClubMembership = new ClubMembership();
+		newClubMembership.setStudentClub(studentClub);
+		DurationAndStatus ds = new DurationAndStatus();
+		ds.setDurationAndStatus(LocalDateTime.now(), LocalDateTime.now().plusYears(1), "+");
+		newClubMembership.setDurationAndStatus(ds);
+		
 		MembershipCard newMembershipCard = new MembershipCard();
-		newMembershipCard.setClubMembership(clubMembership);
+		newMembershipCard.setClubMembership(newClubMembership);
 		newMembershipCard.setOwner(student);
 		em.persist(newMembershipCard);
 		em.flush();

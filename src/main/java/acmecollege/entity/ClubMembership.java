@@ -49,11 +49,11 @@ public class ClubMembership extends PojoBase implements Serializable {
     public static final String FIND_BY_ID = "ClubMembership.findbyId";    
 
 	@ManyToOne( fetch = FetchType.EAGER)
-	@JoinColumn(name = "club_id", referencedColumnName = "club_id")
+	@JoinColumn( name = "club_id", referencedColumnName = "club_id")
 	private StudentClub club;
 
 	@JsonIgnore
-	@OneToOne(mappedBy = "membership")
+	@OneToOne( mappedBy = "membership")
 	private MembershipCard card;
 
 	@Embedded

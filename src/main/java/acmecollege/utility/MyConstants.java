@@ -57,7 +57,7 @@ public interface MyConstants {
     public static final String STUDENT_COURSE_LIST_PATH = "course/list/student/{" + RESOURCE_PATH_STUDENT_ID + "}";
     public static final String COURSE_STUDENT_LIST_PATH = "student/list/course/{" + RESOURCE_PATH_COURSE_ID + "}";
     public static final String CARD_STUDENT_LIST_PATH = "card/list/student/{" + RESOURCE_PATH_STUDENT_ID + "}";
-    public static final String STUDENT_MEMBERSHIP_CARD_PATH = "student/{" + RESOURCE_PATH_STUDENT_ID + "}/clubmembership/{" + RESOURCE_PATH_CLUB_MEMBERSHIP_ID + "}";
+    public static final String STUDENT_MEMBERSHIP_CARD_PATH = "student/{" + RESOURCE_PATH_STUDENT_ID + "}/studentclub/{" + RESOURCE_PATH_STUDENT_CLUB_ID + "}";
     public static final String CLUBMEMBERSHIP_CLUB_ID_PATH = "studentclub/{" + RESOURCE_PATH_STUDENT_CLUB_ID + "}";
 
     //Security constants

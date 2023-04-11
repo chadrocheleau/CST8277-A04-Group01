@@ -58,6 +58,13 @@ import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
 
+
+/**
+ * This class provides all the resources available to the REST API for 
+ * the MembershipCard Entity.
+ * @author paisl
+ *
+ */
 @Path(MEMBERSHIP_CARD_RESOURCE_NAME)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +72,9 @@ public class MembershipCardResource {
 	
 	private static final Logger LOG = LogManager.getLogger();
 	
+	/**
+     * The EJB service that supports this Student Resource
+     */
     @EJB
     protected MembershipCardService service;
 
@@ -72,8 +82,8 @@ public class MembershipCardResource {
     protected SecurityContext sc;
     
 	/**
-     * Simply gets a list of all Membership Cards. only ADMIN_ROLE user can do this.
-     * @return
+     * Resource for getting all MembershipCards 
+     * @return response containing the list of all MembershipCards in the database
      */
     @GET
     @RolesAllowed({ADMIN_ROLE})
@@ -84,15 +94,23 @@ public class MembershipCardResource {
         return response;
     }
     
+    /**
+     * Gets a list of MembershipCards belonging to a Student. If the logged in user is a Student
+     * they are only able to get a list of MembershipCards belonging to themselves. This method 
+     * authenticates Students to ensure that a logged in Student may not retrieve a list of MembershipCards
+     * that do not belong to them.
+     * @param studentId the id of the Student for which to retrieve a list of MembershipCards.
+     * @return response containing the Set of MembershipCards belonging to Student with Id or null if operation
+     * not performed.
+     */
     @GET
     @RolesAllowed({ADMIN_ROLE, USER_ROLE})
     @Path(CARD_STUDENT_LIST_PATH)
-    public Response getMembershipCardById(@PathParam(RESOURCE_PATH_STUDENT_ID) int studentId) {
+    public Response getMembershipCardsForStudent(@PathParam(RESOURCE_PATH_STUDENT_ID) int studentId) {
         LOG.debug("Retrieving membership cards for student with id = {}", studentId);
         Student student = new Student();
         Response response = null;
         Set<MembershipCard> cards = new HashSet<>();
-        //Student student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, studentId);
         
         if (sc.isCallerInRole(ADMIN_ROLE)) {
             student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, studentId);
@@ -124,19 +142,30 @@ public class MembershipCardResource {
         return response;
     }
     
+    /**
+     * Resource for creating a new MembershipCard for a Student 
+     * @param studentId The id of the Student for which a MembershipCard is created
+     * @param clubMembershipId The id of the ClubMembership for which the MembershipCard is created
+     * @return response containing the MembershipCard that has been created
+     * TODO add logic to return null if a MembershipCard has not been created.
+     */
     @POST
     @RolesAllowed({ADMIN_ROLE})
     @Path(STUDENT_MEMBERSHIP_CARD_PATH)
     public Response addMembershipCard(@PathParam("studentId") int studentId ,
-								    	  @PathParam("clubmembershipId") int clubMembershipId) {
+								      @PathParam("clubmembershipId") int clubMembershipId) {
     	Response response = null;
-		
 		MembershipCard persistedCard = service.persistMembershipCard(studentId, clubMembershipId);
     	response = Response.ok(persistedCard).build();
-       
         return response;
     }
     
+    /**
+     * Resource for deleting a MembershipCard by Id
+     * @param id The id of the MembershipCard to be deleted.
+     * @return response containing the MembershipCard deleted
+     * TODO add logic for returning null if operation is not performed for any reason
+     */
     @DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)

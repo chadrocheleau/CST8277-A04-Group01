@@ -35,6 +35,12 @@ import javax.transaction.Transactional;
 
 @SuppressWarnings("unused")
 
+/**
+ * This class contains helper methods to be used for basic authentication
+ * of SecurityUsers for the ACMECollegeSystem application
+ * @author paisl
+ *
+ */
 @Singleton
 public class CustomIdentityStoreJPAHelper {
 
@@ -43,6 +49,12 @@ public class CustomIdentityStoreJPAHelper {
     @PersistenceContext(name = PU_NAME)
     protected EntityManager em;
 
+    /**
+     * Finds a SecurityUser by provided user name. Used when need
+     * to verify that logged in user matches the security user
+     * @param username the user name of the SecurityUser
+     * @return the SecurityUser with associated user name or null if doesn't exist.
+     */
     public SecurityUser findUserByName(String username) {
         LOG.debug("find a SecurityUser by name = {}", username);
         SecurityUser user = null;
@@ -53,19 +65,15 @@ public class CustomIdentityStoreJPAHelper {
         } catch (NoResultException e) {
         	LOG.debug("Couldn't find a SecurityUser by name = {}", username );
         }
-        /* TODO CISJPAH01 - 
-         *  Call the entity manager's createNamedQuery() method to call a named query on SecurityUser
-         *  The named query should be labeled "SecurityUser.userByName" and accepts a parameter called "param1"
-         *  
-         *  Call getSingleResult() inside a try-catch statement (NoResultException)
-         *  
-         *  Note:  Until this method is complete, the Basic Authentication for all HTTP
-         *         requests will fail, none of the REST'ful endpoints will work.
-         *  
-         */
         return user;
     }
 
+    /**
+     * Get list of Roles associated with user with user name provided
+     * @param username The user name of the SecurityUser for which the list of roles is 
+     * to be retrieved
+     * @return The list of roles that the SecurityUser with user name has.
+     */
     public Set<String> findRoleNamesForUser(String username) {
         LOG.debug("find Roles For Username={}", username);
         Set<String> roleNames = emptySet();
@@ -76,12 +84,20 @@ public class CustomIdentityStoreJPAHelper {
         return roleNames;
     }
 
+    /**
+     * Saves a SecurityUser
+     * @param user The SecurityUser to save to the database
+     */
     @Transactional
     public void saveSecurityUser(SecurityUser user) {
         LOG.debug("adding new user={}", user);
         em.persist(user);
     }
 
+    /**
+     * Saves a SecurityRole 
+     * @param role The SecurityRole to save to the database
+     */
     @Transactional
     public void saveSecurityRole(SecurityRole role) {
         LOG.debug("adding new role={}", role);

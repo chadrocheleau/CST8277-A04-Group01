@@ -51,6 +51,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
 @NamedQuery(name = StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")
 @NamedQuery(name = StudentClub.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(sc) FROM StudentClub sc where sc.name = :param1")
+@NamedQuery(name = StudentClub.STUDENT_CLUB_QUERY_BY_ID, query = "SELECT sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(columnDefinition = "bit(1)", name = "academic", discriminatorType = DiscriminatorType.INTEGER)
 
@@ -67,6 +68,7 @@ public abstract class StudentClub extends PojoBase implements Serializable {
 
     public static final String ALL_STUDENT_CLUBS_QUERY_NAME = "StudentClub.findAll";
     public static final String SPECIFIC_STUDENT_CLUB_QUERY_NAME = "StudentClub.findByName";
+    public static final String STUDENT_CLUB_QUERY_BY_ID = "StudentClub.findById";
     public static final String IS_DUPLICATE_QUERY_NAME = "StudentClub.isDuplicate";
 
 	@Basic(optional = false)

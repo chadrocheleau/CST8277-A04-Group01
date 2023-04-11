@@ -18,9 +18,7 @@ import static acmecollege.utility.MyConstants.COURSE_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_ELEMENT;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 import static acmecollege.utility.MyConstants.USER_ROLE;
-
 import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -36,16 +34,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import acmecollege.ejb.CourseService;
 import acmecollege.entity.Course;
-import acmecollege.entity.Professor;
 
 
-
+/**
+ * This class provides all the resources available to the REST API for 
+ * the Course Entity.
+ * @author paisl
+ *
+ */
 @Path(COURSE_RESOURCE_NAME)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -53,12 +53,22 @@ public class CourseResource {
 
 	private static final Logger LOG = LogManager.getLogger();
 
+	/**
+     * The EJB service that supports this Student Resource
+     */
 	@EJB
 	protected CourseService service;
 
+	/**
+     * The SecurityContext used by this class to authenticate users.
+     */
 	@Inject
 	protected SecurityContext sc;
 	
+	/**
+     * Resource for getting all Courses
+     * @return response containing the list of all Courses in the database
+     */
 	@GET
 	@RolesAllowed({ ADMIN_ROLE })
 	public Response getCourses() {
@@ -68,6 +78,12 @@ public class CourseResource {
 		return response;
 	}
 	
+	 /**
+     * Resource for getting a Course by Id
+     * @param id the id of the Course to be retrieved
+     * @return response containing the Course in the database or null
+     * if no Courses found
+     */
 	@GET
 	@RolesAllowed({ ADMIN_ROLE, USER_ROLE })
 	@Path(RESOURCE_PATH_ID_PATH)
@@ -75,13 +91,17 @@ public class CourseResource {
 		LOG.debug("try to retrieve specific course " + id);
 		Response response = null;
 		Course course = null;
-
 		course = service.getById(Course.class, Course.COURSE_BY_ID_QUERY, id);
 		response = Response.status(course == null ? Status.NOT_FOUND : Status.OK).entity(course).build();
-
 		return response;
 	}
 	
+	/**
+     * Resource for adding a new Course. 
+     * @param newCourse The new Course to add to the database
+     * @return response with the Course added
+     * TODO add logic for returning null if operation not performed.
+     */
 	@POST
     @RolesAllowed({ADMIN_ROLE})
     public Response addCourse(Course newCourse) {
@@ -91,6 +111,13 @@ public class CourseResource {
         return response;
     }
 	
+	/**
+     * Resource for updating a Course
+     * @param id the id of the Course to update with the provided information
+     * @param updateCourse the information with which to update the existing Course
+     * @return response with the updated Course after updated or null if Course not
+     * found for update.
+     */
 	@PUT
 	@RolesAllowed({ADMIN_ROLE})
 	@Path(RESOURCE_PATH_ID_PATH)
@@ -102,11 +129,15 @@ public class CourseResource {
 		return response;
 	}
 	
+	/**
+     * Resource for deleting a Course by Id
+     * @param id The id of the Course to delete
+     * @return The deleted Course or null if Course not found or operation not performed.
+     */
 	@DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteCourseById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	
     	Response response = null;
     	Course deletedCourse = null;
     	deletedCourse = service.deleteById(Course.class, Course.COURSE_BY_ID_QUERY, id);

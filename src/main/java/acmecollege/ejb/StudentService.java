@@ -25,14 +25,11 @@ import static acmecollege.utility.MyConstants.PROPERTY_KEY_SIZE;
 import static acmecollege.utility.MyConstants.PROPERTY_SALT_SIZE;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Singleton;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 
 import acmecollege.entity.CourseRegistration;
@@ -41,16 +38,23 @@ import acmecollege.entity.SecurityRole;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
 
+/**
+ * This class provides the specialized Services required by the StudentResource. Generic service 
+ * methods are inherited from ACMECollegeService
+ * @author paisl
+ *
+ */
 @Singleton
 public class StudentService extends ACMECollegeService {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
-
-
+	/**
+	 * Builds a new SecurityUser for a new Student and assigns default user name
+	 * and password.
+	 * 
+	 * @param newStudent The new Student for which to build the SecurityUser
+	 */
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {
         SecurityUser userForNewStudent = new SecurityUser();
@@ -66,7 +70,6 @@ public class StudentService extends ACMECollegeService {
         userForNewStudent.setPwHash(pwHash);
         userForNewStudent.setStudent(newStudent);
         
-        /* TODO ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */ 
         TypedQuery<SecurityRole> userRoleQuery;
         userRoleQuery = em.createNamedQuery(SecurityRole.FIND_USER_ROLE, SecurityRole.class);
         userRoleQuery.setParameter("param1", "USER_ROLE");
@@ -78,6 +81,16 @@ public class StudentService extends ACMECollegeService {
     }
 
 
+    /**
+     * Service that sets a new Professor as the professor for a CourseRegistration for a specific
+     * Student registered for a specific Course
+     * 
+     * @param studentId The id of the Student for which the CourseRegistration exists
+     * @param courseId The id of the Course for which the CourseRegistration exists
+     * @param newProfessor The new Professor information 
+     * @return The Professor that was set as the Professor for this CourseRegistration for a specific
+     * Student registered for a specific Course or null if the Student doesn't exist
+     */
     @Transactional
     public Professor setProfessorForStudentCourse(int studentId, int courseId, Professor newProfessor) {
         Student studentToBeUpdated = em.find(Student.class, studentId);
@@ -104,11 +117,11 @@ public class StudentService extends ACMECollegeService {
     }
 
     /**
-     * To update a student
+     * Service that updates a student
      * 
-     * @param id - id of entity to update
-     * @param studentWithUpdates - entity with updated information
-     * @return Entity with updated information
+     * @param id - id of Student to update
+     * @param studentWithUpdates Student with updated information
+     * @return Student with updated information or null if no Student with id provided
      */
     @Transactional
     public Student updateStudentById(int id, Student studentWithUpdates) {
@@ -123,7 +136,9 @@ public class StudentService extends ACMECollegeService {
     }
 
     /**
-     * To delete a student by id
+     * Service that deletes a Student by Id. There may be a reference in SecurityUser to the Student. This method 
+     * gets that SecurityUser and removes it as well so as to avoid dangling reference in SecurityUser table to the
+     * Student being deleted.
      * 
      * @param id - student id to delete
      */
@@ -132,13 +147,9 @@ public class StudentService extends ACMECollegeService {
         Student student = getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
         if (student != null) {
             em.refresh(student);
-            
+            //get SecurityUser for Student being deleted so the reference to the Student is not left dangling
             TypedQuery<SecurityUser> findUser = em.createNamedQuery(SecurityRole.FIND_STUDENT_WITH_ROLE, SecurityUser.class);
             findUser.setParameter("param1", id);
-                /* TODO ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
-                   so that when we remove it, the relationship from SECURITY_USER table
-                   is not dangling
-                */ 
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(student);

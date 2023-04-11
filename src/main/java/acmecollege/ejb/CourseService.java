@@ -18,15 +18,23 @@ import javax.transaction.Transactional;
 
 import acmecollege.entity.Course;
 
-
+/**
+ * This class provides the specialized Services required by the CourseResource. Generic service 
+ * methods are inherited from ACMECollegeService
+ * @author paisl
+ *
+ */
 @Singleton
 public class CourseService extends ACMECollegeService {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Service that updates a Course
+	 * @param updates The Course containing information to update the Course with
+	 * @param id The id of the Course being updated
+	 * @return the Course with updates or null if updates weren't applied
+	 */
 	 @Transactional
 	    public Course updateCourseById(Course updates,  int id) {
 	    	Course courseToUpdate =  getById(Course.class, Course.COURSE_BY_ID_QUERY, id);

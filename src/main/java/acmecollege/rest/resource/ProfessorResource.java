@@ -45,6 +45,12 @@ import static acmecollege.utility.MyConstants.USER_ROLE;
 
 import java.util.List;
 
+/**
+ * This class provides all the resources available to the REST API for 
+ * the Professor Entity.
+ * @author paisl
+ *
+ */
 @Path(PROFESSOR_SUBRESOURCE_NAME)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -52,12 +58,22 @@ public class ProfessorResource {
 
 	private static final Logger LOG = LogManager.getLogger();
 
+	/**
+     * The EJB service that supports this Student Resource
+     */
 	@EJB
 	protected ProfessorService service;
 
+	/**
+     * The SecurityContext used by this class to authenticate users.
+     */
 	@Inject
 	protected SecurityContext sc;
 
+	 /**
+     * Resource for getting all professors
+     * @return response containing the list of all Professors in the database
+     */
 	@GET
 	@RolesAllowed({ ADMIN_ROLE })
 	public Response getProfessors() {
@@ -67,6 +83,11 @@ public class ProfessorResource {
 		return response;
 	}
 
+	/**
+     * Resource for getting a Professor by a provided ID
+     * @param id The Id of the Professor for which to search
+     * @return response containing The Professor with the provided ID or null if not found.
+     */
 	@GET
 	@RolesAllowed({ ADMIN_ROLE, USER_ROLE })
 	@Path(RESOURCE_PATH_ID_PATH)
@@ -81,6 +102,12 @@ public class ProfessorResource {
 		return response;
 	}
 	
+	/**
+     * Resource for adding a new Professor. 
+     * @param newProfessor The new Professor to add to the database
+     * @return response with the Professor added 
+     * TODO add logic for returning null if operation not performed.
+     */
 	@POST
     @RolesAllowed({ADMIN_ROLE})
     public Response addProfessor(Professor newProfessor) {
@@ -90,6 +117,13 @@ public class ProfessorResource {
         return response;
     }
 	
+	/**
+     * Resource for updating a Professor
+     * @param id the id of the Professor to update with the provided information
+     * @param updateProfessor the information with which to update the existing Professor
+     * @return response with the updated Professor after updated or null if Professor not
+     * found for update.
+     */
 	@PUT
 	@RolesAllowed({ADMIN_ROLE})
 	@Path(RESOURCE_PATH_ID_PATH)
@@ -101,6 +135,11 @@ public class ProfessorResource {
 		return response;
 	}
 	
+	/**
+	 * Resource for deleting a Professor by Id
+	 * @param id The id of the Professor to delete
+	 * @return The deleted Professor or null if operation not performed.
+	 */
 	@DELETE
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)

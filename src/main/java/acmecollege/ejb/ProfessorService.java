@@ -18,14 +18,24 @@ import javax.transaction.Transactional;
 
 import acmecollege.entity.Professor;
 
+/**
+ * This class provides the specialized Services required by the ProfessorResource. Generic service 
+ * methods are inherited from ACMECollegeService
+ * @author paisl
+ *
+ */
 @Singleton
 public class ProfessorService extends ACMECollegeService {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Service that updates a Professor
+	 * 
+	 * @param updates The Professor that contains information with which to update the Professor
+	 * @param id The id of the Professor to update
+	 * @return The updated Professor or null if the operation was not performed.
+	 */
 	 @Transactional
 	    public Professor updateProfessorById(Professor updates,  int id) {
 	    	Professor entityToUpdate = getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);

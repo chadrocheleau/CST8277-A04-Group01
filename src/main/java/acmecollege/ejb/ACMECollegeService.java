@@ -67,7 +67,9 @@ import acmecollege.entity.StudentClub;
 @SuppressWarnings("unused")
 
 /**
- * Stateless Singleton EJB Bean - ACMECollegeService
+ * Stateless Singleton EJB Bean - ACMECollegeService. This Class contains
+ * Generic methods that can be used by all Service Beans that provide services
+ * to specific Entity Resources.
  */
 @Singleton
 public class ACMECollegeService implements Serializable {
@@ -84,11 +86,12 @@ public class ACMECollegeService implements Serializable {
     // ********** Generic Methods to be used for any type of entity *********************
 
     /**
-     * 
-     * @param <T>
-     * @param entity
-     * @param namedQuery
-     * @return
+     * Generic method that is used to get all Entities from the database
+     * @param <T> The type of the entity to be retrieved
+     * @param entity the entity to look for in the database and create list of
+     * @param namedQuery The Named Query to use when getting this Entity list
+     * @return The list of Entities retrieved from the database
+     * TODO test what happens when no results are found... May need error handling here
      */
     public <T> List<T> getAll(Class<T> entity, String namedQuery) {
         TypedQuery<T> allQuery = em.createNamedQuery(namedQuery, entity);
@@ -96,12 +99,12 @@ public class ACMECollegeService implements Serializable {
     }
     
     /**
-     * 
-     * @param <T>
-     * @param entity
-     * @param namedQuery
-     * @param id
-     * @return
+     * Generic method that is used to get a specific Entity from the database 
+     * @param <T> The type of the entity to be retrieved
+     * @param entity the entity retrieved from the database
+     * @param namedQuery The Named Query to use when getting this Entity by id
+     * @param id The id of the Entity to retrieve
+     * @return the Entity or null if Entity not found
      */
     public <T> T getById(Class<T> entity, String namedQuery, int id) {
     	T returnedEntity = null;
@@ -118,10 +121,11 @@ public class ACMECollegeService implements Serializable {
     }
     
     /**
-     * 
-     * @param <T>
-     * @param entity
-     * @return
+     * Generic method to persist an Entity
+     * @param <T> The type of the entity to persist
+     * @param entity the Entity to persist
+     * @return The Entity that has been persisted.
+     * TODO test what happens when an invalid Entity is passed... May need error handling here.
      */
     @Transactional
     public <T> T persistEntity(T entity) {
@@ -130,12 +134,12 @@ public class ACMECollegeService implements Serializable {
     }
     
     /**
-     * 
-     * @param <T>
-     * @param entityClass
-     * @param namedQuery
-     * @param id
-     * @return
+     * Generic method to delete an Entity from the database
+     * @param <T> The type of the entity to delete
+     * @param entityClass The entity class of the entity that is being deleted
+     * @param namedQuery The named Query to use to get the Entity that needs to be deleted
+     * @param id the Id of the Entity being deleted
+     * @return The entity deleted or null if operation was not performed
      */
     @Transactional
     public <T> T deleteById(Class<T> entityClass, String namedQuery, int id) {

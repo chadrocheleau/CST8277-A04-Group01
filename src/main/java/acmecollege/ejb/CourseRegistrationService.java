@@ -47,28 +47,44 @@ public class CourseRegistrationService extends ACMECollegeService {
 	 */
 	@Transactional
 	public CourseRegistration persistRegistration(CourseRegistration registration,
-												  Student student,
-											      Course course,
-											      Professor professor) {
-		// fix detached state of student and course before setting Registration fields
-		registration.setStudent(em.merge(student));
-		registration.setCourse(em.merge(course));		
-		try {
-			registration.setProfessor(em.merge(professor));	
-		} catch (Exception e) {
-			registration.setProfessor(professor);
+												  int studentId,
+											      int courseId,
+											      int profId) {
+		Student regStudent = getById(Student.class, Student.QUERY_STUDENT_BY_ID, studentId);
+		Course regCourse = getById(Course.class, Course.COURSE_BY_ID_QUERY, courseId);
+		Professor regProf = getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, profId);
+		if (regStudent == null || regCourse == null) {
+			return null;
+		} else { 
+			registration.setStudent(regStudent);
+			registration.setCourse(regCourse);
+			registration.setProfessor(regProf); // can and may be null
+			try {
+				// if CourseRegistration exists for this studentId and courseId then error thrown
+				em.persist(registration);
+				em.flush();	
+			} catch (Exception e) {
+				//might be ConstraintViolationException gotta figure this out
+				registration = null;
+			}
+			
 		}
-		em.persist(registration);
-		em.flush();	
 		return registration;
 	}
 	
+	/**
+	 * Service that deletes a CourseRegistration by it's Composite Primary Key CourseRegistrationPK
+	 * @param id the id of the CourseRegistration to be deleted.
+	 * @return the CourseRegistration that was deleted or Null if no CourseRegistration exists to delete
+	 * TODO test what em.find returns when no result is found.. may need error handling
+	 */
 	@Transactional
 	public CourseRegistration deleteRegistrationById(CourseRegistrationPK id) {
-		CourseRegistration registration = null;
-		registration = em.find(CourseRegistration.class, id);
-		em.remove(registration);
-		em.flush();
+		CourseRegistration registration = em.find(CourseRegistration.class, id);
+		if (registration != null) {
+			em.remove(registration);
+			em.flush();
+		}
 		return registration;
 	}
 	
@@ -77,14 +93,11 @@ public class CourseRegistrationService extends ACMECollegeService {
 		Course regCourse = getById(Course.class, Course.COURSE_BY_ID_QUERY, courseId);
 		Professor regProf = getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, profId);
 		Set<CourseRegistration> updatedRegistrations = new HashSet<>();
-
 		if (regProf != null && regCourse != null) {
 			// get courseRegistrations and set prof
-			updatedRegistrations = regCourse.getCourseRegistrations();
-			
+			updatedRegistrations = regCourse.getCourseRegistrations();	
 			updatedRegistrations.forEach(registration -> {
-				registration.setProfessor(regProf);
-				
+				registration.setProfessor(regProf);		
 			});
 			em.merge(regProf);
 			em.flush();

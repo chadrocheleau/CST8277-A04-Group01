@@ -95,6 +95,7 @@ public class TestACMECollegeSystem {
             .path(STUDENT_RESOURCE_NAME)
             .request()
             .get();
+            
         assertThat(response.getStatus(), is(200));
         List<Student> students = response.readEntity(new GenericType<List<Student>>(){});
         assertThat(students, is(not(empty())));

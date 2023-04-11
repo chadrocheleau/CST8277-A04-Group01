@@ -13,56 +13,39 @@
  */
 package acmecollege.ejb;
 
-import static acmecollege.entity.StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME;
-import static acmecollege.utility.MyConstants.PARAM1;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Singleton;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 
 import acmecollege.entity.ClubMembership;
 import acmecollege.entity.MembershipCard;
 import acmecollege.entity.StudentClub;
 
+/**
+ * This class provides the specialized Services required by the StudentClubResource. Generic service 
+ * methods are inherited from ACMECollegeService
+ * @author paisl
+ *
+ */
 @Singleton
 public class StudentClubService extends ACMECollegeService{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-	public List<StudentClub> getAllStudentClubs() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<StudentClub> cq = cb.createQuery(StudentClub.class);
-        cq.select(cq.from(StudentClub.class));
-        return em.createQuery(cq).getResultList();
-    }
 
-    // Why not use the build-in em.find?  The named query SPECIFIC_STUDENT_CLUB_QUERY_NAME
-    // includes JOIN FETCH that we cannot add to the above API
-    public StudentClub getStudentClubById(int id) {
-        TypedQuery<StudentClub> specificStudentClubQuery = em.createNamedQuery(SPECIFIC_STUDENT_CLUB_QUERY_NAME, StudentClub.class);
-        specificStudentClubQuery.setParameter(PARAM1, id);
-        return specificStudentClubQuery.getSingleResult();
-    }
-    
+	/**
+	 * Service that updates an existing StudentClub with new StudentClub information
+	 * @param studentClubId The id of the StudentClub being updated
+	 * @param updatingStudentClub the StudentClub containing information with which to update a StudentClub
+	 * @return
+	 */
     @Transactional
-    public StudentClub persistStudentClub(StudentClub newStudentClub) {
-        em.persist(newStudentClub);
-        return newStudentClub;
-    }
-
-    @Transactional
-    public StudentClub updateStudentClub(int id, StudentClub updatingStudentClub) {
-    	StudentClub studentClubToBeUpdated = getStudentClubById(id);
-        if (studentClubToBeUpdated != null) {
+    public StudentClub updateStudentClub(int studentClubId, StudentClub updatingStudentClub) {
+    	StudentClub studentClubToBeUpdated = getById(StudentClub.class, StudentClub.STUDENT_CLUB_QUERY_BY_ID , studentClubId);
+        if (studentClubToBeUpdated != null 
+        		&& !isDuplicated(updatingStudentClub, StudentClub.IS_DUPLICATE_QUERY_NAME, updatingStudentClub.getName())) {
             em.refresh(studentClubToBeUpdated);
             studentClubToBeUpdated.setName(updatingStudentClub.getName());
             em.merge(studentClubToBeUpdated);
@@ -71,9 +54,16 @@ public class StudentClubService extends ACMECollegeService{
         return studentClubToBeUpdated;
     }
     
+ 
+    /**
+     * Service that deletes a StudentClub. When deleting a StudentClub any ClubMemberships that it has need to have their
+     * Possible relationship with MembershipCard removed so they can be deleted without causing Constraint violation against
+     * MembershipCard table.
+     * @param id the id of the StudentClub that needs to be removed.
+     * @return
+     */
     @Transactional
     public StudentClub deleteStudentClub(int id) {
-        //StudentClub sc = getStudentClubById(id);
     	StudentClub sc = getById(StudentClub.class, StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, id);
         if (sc != null) {
             Set<ClubMembership> memberships = sc.getClubMemberships();

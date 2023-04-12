@@ -13,11 +13,17 @@
  */
 package acmecollege.ejb;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.ejb.Singleton;
 import javax.transaction.Transactional;
 
 import acmecollege.entity.ClubMembership;
+import acmecollege.entity.Course;
+import acmecollege.entity.CourseRegistration;
 import acmecollege.entity.MembershipCard;
+import acmecollege.entity.Professor;
 import acmecollege.entity.StudentClub;
 
 /**

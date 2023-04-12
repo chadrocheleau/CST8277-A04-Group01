@@ -13,15 +13,21 @@
  */
 package acmecollege.ejb;
 
+import static acmecollege.utility.MyConstants.PARAM1;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.ejb.Singleton;
+import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import acmecollege.entity.ClubMembership;
+import acmecollege.entity.Course;
+import acmecollege.entity.CourseRegistration;
 import acmecollege.entity.DurationAndStatus;
 import acmecollege.entity.MembershipCard;
+import acmecollege.entity.Professor;
 import acmecollege.entity.Student;
 import acmecollege.entity.StudentClub;
 
@@ -73,6 +79,18 @@ public class MembershipCardService extends ACMECollegeService {
 		em.flush();
         return newMembershipCard;
     }
+
+	
+	@Transactional
+	public MembershipCard setMembershipForMembershipCard(int clubmembershipId, int membershipCardId) {
+		ClubMembership regClubMembership = getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubmembershipId);
+		MembershipCard regMembership = getById(MembershipCard.class, MembershipCard.ID_CARD_QUERY_NAME, membershipCardId);
+		if (regClubMembership.getCard() == null) {
+			regMembership.setClubMembership(regClubMembership);
+			em.flush();
+		}
+		return regMembership;		
+	}
 
 	/**
 	 * Service that gets a MembershipCard from the database

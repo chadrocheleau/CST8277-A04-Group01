@@ -24,6 +24,9 @@ import static acmecollege.utility.MyConstants.CARD_STUDENT_LIST_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_ID;
 import static acmecollege.utility.MyConstants.STUDENT_MEMBERSHIP_CARD_PATH;
 import static acmecollege.utility.MyConstants.RESOURCE_PATH_STUDENT_CLUB_ID;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_CLUB_MEMBERSHIP_ID;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_MEMBERSHIP_CARD_ID;
+import static acmecollege.utility.MyConstants.CARD_MEMBERSHIP_ID_PATH;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +41,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -159,6 +163,17 @@ public class MembershipCardResource {
 		MembershipCard persistedCard = service.persistMembershipCard(studentId, scId);
     	response = Response.ok(persistedCard).build();
         return response;
+    }
+
+    @PUT
+    @RolesAllowed({ADMIN_ROLE})
+    @Path(CARD_MEMBERSHIP_ID_PATH)
+    public Response setClubMembership(@PathParam(RESOURCE_PATH_CLUB_MEMBERSHIP_ID) int clubMembershipId,
+    		@PathParam(RESOURCE_PATH_MEMBERSHIP_CARD_ID) int membershipCardId) {
+    	Response response = null;
+    	MembershipCard updatedMembershipCard = service.setMembershipForMembershipCard(clubMembershipId, membershipCardId);
+    	response = Response.status(updatedMembershipCard == null ? Status.NOT_MODIFIED : Status.OK).entity(updatedMembershipCard).build();
+    	return response;
     }
     
     /**

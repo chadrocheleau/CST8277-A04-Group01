@@ -40,6 +40,8 @@ public interface MyConstants {
     public static final String RESOURCE_PATH_PROFESSOR_ID = "professorId";
     public static final String RESOURCE_PATH_STUDENT_CLUB_ID = "scId";
     public static final String RESOURCE_PATH_CLUB_MEMBERSHIP_ID = "clubmembershipId";
+    public static final String RESOURCE_PATH_MEMBERSHIP_CARD_ID = "membershipCardId";
+    
     public static final String CREDENTIAL_RESOURCE_NAME = "credential";
     public static final String STUDENT_RESOURCE_NAME =  "student";
     public static final String COURSE_RESOURCE_NAME = "course";
@@ -48,8 +50,8 @@ public interface MyConstants {
     public static final String STUDENT_CLUB_RESOURCE_NAME =  "studentclub";
     public static final String CLUB_MEMBERSHIP_RESOURCE_NAME = "clubmembership";
     public static final String PROFESSOR_SUBRESOURCE_NAME =  "professor";
-    public static final String COURSE_PROFESSOR_RESOURCE_PATH =
-        RESOURCE_PATH_ID_PATH + SLASH + PROFESSOR_SUBRESOURCE_NAME;
+
+    public static final String COURSE_PROFESSOR_RESOURCE_PATH = RESOURCE_PATH_ID_PATH + SLASH + PROFESSOR_SUBRESOURCE_NAME;
     public static final String STUDENT_COURSE_PROFESSOR_RESOURCE_PATH = "{" + RESOURCE_PATH_STUDENT_ID + "}/course/{" + RESOURCE_PATH_COURSE_ID + "}/professor";
     public static final String COURSE_STUDENT_PROFESSOR_REG_RESOURCE_PATH = "course/{" + RESOURCE_PATH_COURSE_ID + "}/student/{" + RESOURCE_PATH_STUDENT_ID + "}/professor/{" + RESOURCE_PATH_PROFESSOR_ID + "}";
     public static final String COURSE_REG_COURSE_STUDENT_ID_PATH = "student/{" + RESOURCE_PATH_STUDENT_ID + "}/course/{" + RESOURCE_PATH_COURSE_ID + "}";
@@ -59,6 +61,7 @@ public interface MyConstants {
     public static final String CARD_STUDENT_LIST_PATH = "card/list/student/{" + RESOURCE_PATH_STUDENT_ID + "}";
     public static final String STUDENT_MEMBERSHIP_CARD_PATH = "student/{" + RESOURCE_PATH_STUDENT_ID + "}/studentclub/{" + RESOURCE_PATH_STUDENT_CLUB_ID + "}";
     public static final String CLUBMEMBERSHIP_CLUB_ID_PATH = "studentclub/{" + RESOURCE_PATH_STUDENT_CLUB_ID + "}";
+    public static final String CARD_MEMBERSHIP_ID_PATH = "/{" + RESOURCE_PATH_MEMBERSHIP_CARD_ID + "}/" + CLUB_MEMBERSHIP_RESOURCE_NAME + "/{" + RESOURCE_PATH_CLUB_MEMBERSHIP_ID + "}";
 
     //Security constants
     public static final String USER_ROLE = "USER_ROLE";

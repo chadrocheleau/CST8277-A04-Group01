@@ -119,11 +119,9 @@ public class CourseResource {
 	@RolesAllowed({ADMIN_ROLE})
 	@Path(RESOURCE_PATH_ID_PATH)
 	public Response updateCourse(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Course updateCourse) {
-		Course updatedCourse = null;
-		Response response = null;
-		updatedCourse = service.updateCourseById(updateCourse,  id);
-		response = Response.status(updatedCourse == null ? Status.NOT_FOUND : Status.OK).entity(updatedCourse).build();
-		return response;
+		Course updatedCourse = service.updateCourseById(updateCourse,  id);
+//		response = Response.status(updatedCourse == null ? Status.NOT_FOUND : Status.OK).entity(updatedCourse).build();
+		return ResponseCodes.getOrDeleteResponse(updatedCourse);
 	}
 	
 	/**

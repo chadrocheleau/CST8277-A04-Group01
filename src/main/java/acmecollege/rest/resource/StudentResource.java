@@ -106,7 +106,7 @@ public class StudentResource {
             SecurityUser sUser = (SecurityUser) wCallerPrincipal.getWrapped();
             student = sUser.getStudent();
             if (student != null && student.getId() == id) {
-                response = Response.status(Status.OK).entity(student).build();
+                response = Response.ok(student).build();
             } else {
                 throw new ForbiddenException("User trying to access resource it does not own (wrong userid)");
             }

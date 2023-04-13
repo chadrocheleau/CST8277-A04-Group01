@@ -23,6 +23,7 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -54,6 +55,7 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
 
 	private static Course newCourse;
 	private static Course updateCourse;
+	private static int newCourseId;
 	
 	/**
 	 * Initializes two Courses to be used as entities for create
@@ -245,6 +247,8 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
            assertThat(created.getCreditUnits(), is(NEW_COURSE_UNITS));
            assertThat(created.getOnline(), is(NEW_COURSE_ONLINE));
            
+           newCourseId = created.getId();
+           
        }
        
        
@@ -279,7 +283,7 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
            
     	   Response response = webTarget
                .register(adminAuth)
-               .path(COURSE_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+               .path(COURSE_RESOURCE_NAME + "/" + newCourseId)
                .request()
                .put(Entity.entity(updateCourse, MediaType.APPLICATION_JSON));
               
@@ -305,7 +309,7 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
            
     	   Response response = webTarget
                .register(userAuth)
-               .path(COURSE_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+               .path(COURSE_RESOURCE_NAME + "/" + newCourseId)
                .request()
                .put(Entity.entity(updateCourse, MediaType.APPLICATION_JSON));
            
@@ -323,7 +327,7 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
            
     	   Response response = webTarget
                .register(adminAuth)
-               .path(COURSE_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+               .path(COURSE_RESOURCE_NAME + "/" + newCourseId)
                .request()
                .delete();
            
@@ -349,7 +353,7 @@ public class TestACMECollegeCourse extends TestACMECollegeSystem {
        public void delete_course_userrole() throws JsonMappingException, JsonProcessingException {
            Response response = webTarget
                .register(userAuth)
-               .path(COURSE_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+               .path(COURSE_RESOURCE_NAME + "/" + newCourseId)
                .request()
                .delete();
            

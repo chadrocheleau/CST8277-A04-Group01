@@ -52,6 +52,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
 
 	private static Student newStudent;
 	private static Student updateStudent;
+	private static int newStudentId;
 	/**
 	 * Initializes two Students to be used as entities for create
 	 * and update operations
@@ -220,6 +221,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
         assertThat(returnedStudent.getFirstName(), is(NEW_FIRST_NAME));
         assertThat(returnedStudent.getLastName(), is(NEW_LAST_NAME));
         
+        newStudentId = returnedStudent.getId();
     }
     
     /**
@@ -252,7 +254,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
     	
         Response response = webTarget
             .register(adminAuth)
-            .path(STUDENT_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+            .path(STUDENT_RESOURCE_NAME + "/" + newStudentId)
             .request()
             .put(Entity.entity(updateStudent, MediaType.APPLICATION_JSON));
            
@@ -274,7 +276,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
     	
         Response response = webTarget
             .register(userAuth)
-            .path(STUDENT_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+            .path(STUDENT_RESOURCE_NAME +  "/" + newStudentId)
             .request()
             .put(Entity.entity(updateStudent, MediaType.APPLICATION_JSON));
         
@@ -293,7 +295,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
     	
         Response response = webTarget
             .register(adminAuth)
-            .path(STUDENT_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+            .path(STUDENT_RESOURCE_NAME + "/" + newStudentId)
             .request()
             .delete();
         
@@ -318,7 +320,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
     	
         Response response = webTarget
             .register(userAuth)
-            .path(STUDENT_RESOURCE_NAME + DEFAULT_ID_PATH_NEW_RECORD)
+            .path(STUDENT_RESOURCE_NAME +  "/" + newStudentId)
             .request()
             .delete();
         

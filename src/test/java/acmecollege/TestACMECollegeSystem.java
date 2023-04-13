@@ -68,6 +68,14 @@ public class TestACMECollegeSystem {
     static URI uri;
     static HttpAuthenticationFeature adminAuth;
     static HttpAuthenticationFeature userAuth;
+    
+  /**
+   * The following status code constants can be used by test sub classes
+   * to verify the status codes in assertions.
+   */
+  	protected static final int FORBIDDEN = 403;
+  	protected static final int OK = 200;
+  	protected static int NOT_FOUND = 404;
 
     @BeforeAll
     public static void oneTimeSetUp() throws Exception {

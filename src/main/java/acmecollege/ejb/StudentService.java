@@ -58,9 +58,9 @@ public class StudentService extends ACMECollegeService {
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {
         SecurityUser userForNewStudent = new SecurityUser();
-        // TODO possibly include logic to make sure this username doesn't already exist in SecurityUser table
         String defaultUserName = DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName();
         userForNewStudent.setUsername(defaultUserName);
+        // So long as duplicate user name doesn't exist in SecurityUser table then go ahead
         if (!isDuplicated(userForNewStudent, SecurityUser.IS_DUPLICATE_QUERY_NAME, userForNewStudent.getUsername())) {
         	Map<String, String> pbAndjProperties = new HashMap<>();
             pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);

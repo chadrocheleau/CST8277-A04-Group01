@@ -130,8 +130,7 @@ public class StudentResource {
         Student newStudentWithIdTimestamps = service.persistEntity(newStudent);
         // Build a SecurityUser linked to the new student
         service.buildUserForNewStudent(newStudentWithIdTimestamps);
-        response = Response.ok(newStudentWithIdTimestamps).build();
-        return response;
+        return ResponseCodes.getOrDeleteResponse(newStudentWithIdTimestamps);
     }
     
     /**
@@ -145,11 +144,8 @@ public class StudentResource {
    	@RolesAllowed({ADMIN_ROLE})
    	@Path(RESOURCE_PATH_ID_PATH)
    	public Response updateStudent(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id, Student updateStudent) {
-   		Student updatedStudent = null;
-   		Response response = null;
-   		updatedStudent = service.updateStudentById(id,  updateStudent);
-   		response = Response.status(updatedStudent == null ? Status.NOT_FOUND : Status.OK).entity(updatedStudent).build();
-   		return response;
+   		Student updatedStudent = service.updateStudentById(id,  updateStudent);
+   		return ResponseCodes.getOrDeleteResponse(updatedStudent);
    	}
        
     /**

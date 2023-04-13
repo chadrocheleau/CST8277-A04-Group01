@@ -52,11 +52,13 @@ import acmecollege.rest.serializer.SecurityRoleSerializer;
 @Entity
 @Table(name = "security_user")
 @NamedQuery(name = SecurityUser.USER_BY_NAME, query = "SELECT s FROM SecurityUser s left JOIN FETCH s.roles where s.username = :param1")
+@NamedQuery(name = SecurityUser.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(sc) FROM SecurityUser sc where sc.username = :param1")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
     
     public static final String USER_BY_NAME = "SecurityUser.findAll";
+    public static final String IS_DUPLICATE_QUERY_NAME = "SecurityUser.findDuplicates";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

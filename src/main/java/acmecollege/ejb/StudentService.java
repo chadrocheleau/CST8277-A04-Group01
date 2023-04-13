@@ -58,26 +58,30 @@ public class StudentService extends ACMECollegeService {
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {
         SecurityUser userForNewStudent = new SecurityUser();
-        userForNewStudent.setUsername(
-            DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName());
-        Map<String, String> pbAndjProperties = new HashMap<>();
-        pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
-        pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
-        pbAndjProperties.put(PROPERTY_SALT_SIZE, DEFAULT_SALT_SIZE);
-        pbAndjProperties.put(PROPERTY_KEY_SIZE, DEFAULT_KEY_SIZE);
-        pbAndjPasswordHash.initialize(pbAndjProperties);
-        String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
-        userForNewStudent.setPwHash(pwHash);
-        userForNewStudent.setStudent(newStudent);
+        // TODO possibly include logic to make sure this username doesn't already exist in SecurityUser table
+        String defaultUserName = DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName();
+        userForNewStudent.setUsername(defaultUserName);
+        if (!isDuplicated(userForNewStudent, SecurityUser.IS_DUPLICATE_QUERY_NAME, userForNewStudent.getUsername())) {
+        	Map<String, String> pbAndjProperties = new HashMap<>();
+            pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
+            pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
+            pbAndjProperties.put(PROPERTY_SALT_SIZE, DEFAULT_SALT_SIZE);
+            pbAndjProperties.put(PROPERTY_KEY_SIZE, DEFAULT_KEY_SIZE);
+            pbAndjPasswordHash.initialize(pbAndjProperties);
+            String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
+            userForNewStudent.setPwHash(pwHash);
+            userForNewStudent.setStudent(newStudent);
+            
+            TypedQuery<SecurityRole> userRoleQuery;
+            userRoleQuery = em.createNamedQuery(SecurityRole.FIND_USER_ROLE, SecurityRole.class);
+            userRoleQuery.setParameter("param1", "USER_ROLE");
+            SecurityRole userRole = userRoleQuery.getSingleResult();
+            		
+            userForNewStudent.getRoles().add(userRole);
+            userRole.getUsers().add(userForNewStudent);
+            em.persist(userForNewStudent);
+        }
         
-        TypedQuery<SecurityRole> userRoleQuery;
-        userRoleQuery = em.createNamedQuery(SecurityRole.FIND_USER_ROLE, SecurityRole.class);
-        userRoleQuery.setParameter("param1", "USER_ROLE");
-        SecurityRole userRole = userRoleQuery.getSingleResult();
-        		
-        userForNewStudent.getRoles().add(userRole);
-        userRole.getUsers().add(userForNewStudent);
-        em.persist(userForNewStudent);
     }
 
 

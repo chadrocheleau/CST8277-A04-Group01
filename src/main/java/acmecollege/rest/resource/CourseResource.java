@@ -38,6 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import acmecollege.ejb.CourseService;
 import acmecollege.entity.Course;
+import acmecollege.utility.ResponseCodes;
 
 
 /**
@@ -74,8 +75,7 @@ public class CourseResource {
 	public Response getCourses() {
 		LOG.debug("retrieving all courses...");
 		List<Course> courses = service.getAll(Course.class, Course.ALL_COURSES_QUERY);
-		Response response = Response.ok(courses).build();
-		return response;
+		return ResponseCodes.getAllResponse(courses);
 	}
 	
 	 /**
@@ -89,11 +89,8 @@ public class CourseResource {
 	@Path(RESOURCE_PATH_ID_PATH)
 	public Response getCourseById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
 		LOG.debug("try to retrieve specific course " + id);
-		Response response = null;
-		Course course = null;
-		course = service.getById(Course.class, Course.COURSE_BY_ID_QUERY, id);
-		response = Response.status(course == null ? Status.NOT_FOUND : Status.OK).entity(course).build();
-		return response;
+		Course course = service.getById(Course.class, Course.COURSE_BY_ID_QUERY, id);
+		return ResponseCodes.getOrDeleteResponse(course);
 	}
 	
 	/**
@@ -138,10 +135,7 @@ public class CourseResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteCourseById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	Response response = null;
-    	Course deletedCourse = null;
-    	deletedCourse = service.deleteById(Course.class, Course.COURSE_BY_ID_QUERY, id);
-    	response = Response.status(deletedCourse == null ? Status.NOT_FOUND : Status.OK).entity(deletedCourse).build();
-    	return response;
+    	Course deletedCourse = service.deleteById(Course.class, Course.COURSE_BY_ID_QUERY, id);
+    	return ResponseCodes.getOrDeleteResponse(deletedCourse);
     }
 }

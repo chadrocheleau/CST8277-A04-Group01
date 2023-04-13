@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 //import acmecollege.ejb.ACMECollegeService;
 import acmecollege.ejb.StudentClubService;
 import acmecollege.entity.StudentClub;
+import acmecollege.utility.ResponseCodes;
 import acmecollege.entity.ClubMembership;
 import acmecollege.entity.Student;
 
@@ -76,9 +77,7 @@ public class StudentClubResource {
     public Response getStudentClubs() {
         LOG.debug("Retrieving all student clubs...");
         List<StudentClub> studentClubs = service.getAll(StudentClub.class, StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME);
-        LOG.debug("Student clubs found = {}", studentClubs);
-        Response response = Response.ok(studentClubs).build();
-        return response;
+        return ResponseCodes.getAllResponse(studentClubs);
     }
     
     /**
@@ -92,8 +91,7 @@ public class StudentClubResource {
     public Response getStudentClubById(@PathParam("studentClubId") int studentClubId) {
         LOG.debug("Retrieving student club with id = {}", studentClubId);
         StudentClub studentClub = service.getById(StudentClub.class, StudentClub.STUDENT_CLUB_QUERY_BY_ID , studentClubId);
-        Response response = Response.ok(studentClub).build();
-        return response;
+        return ResponseCodes.getOrDeleteResponse(studentClub);
     }
 
     /**
@@ -107,8 +105,7 @@ public class StudentClubResource {
     public Response deleteStudentClub(@PathParam("studentClubId") int scId) {
         LOG.debug("Deleting student club with id = {}", scId);
         StudentClub sc = service.deleteStudentClub(scId);
-        Response response = Response.ok(sc).build();
-        return response;
+        return ResponseCodes.getOrDeleteResponse(sc);
     }
     
     //TODO Please try to understand and test the below methods:

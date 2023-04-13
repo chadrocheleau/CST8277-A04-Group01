@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import acmecollege.ejb.ClubMembershipService;
 import acmecollege.entity.ClubMembership;
+import acmecollege.utility.ResponseCodes;
 
 /**
  * This class provides all the resources available to the REST API for 
@@ -72,8 +73,7 @@ public class ClubMembershipResource  {
     public Response getClubMemberships() {
         LOG.debug("retrieving all Club Memberships ...");
         List<ClubMembership> memberships = service.getAll(ClubMembership.class, ClubMembership.FIND_ALL);
-        Response response = Response.ok(memberships).build();
-        return response;
+        return ResponseCodes.getAllResponse(memberships);
     }
     
     /**
@@ -87,8 +87,7 @@ public class ClubMembershipResource  {
     public Response getClubMembershipById(@PathParam("clubMembershipId") int clubMembershipId) {
         LOG.debug("Retrieving club membership with id = {}", clubMembershipId);
         ClubMembership clubMembership = service.getById(ClubMembership.class, ClubMembership.FIND_BY_ID, clubMembershipId);
-        Response response = Response.ok(clubMembership).build();
-        return response;
+        return ResponseCodes.getOrDeleteResponse(clubMembership);
     }
     
     /**
@@ -120,7 +119,6 @@ public class ClubMembershipResource  {
     public Response deleteClubMembership(@PathParam("clubMembershipId") int clubMembershipId) {
         LOG.debug("Deleting club membership with id = {}", clubMembershipId);
         ClubMembership deletedMembership = service.deleteClubMembership(clubMembershipId);
-        Response response = Response.ok(deletedMembership).build();
-        return response;
+        return ResponseCodes.getOrDeleteResponse(deletedMembership);
     }
 }

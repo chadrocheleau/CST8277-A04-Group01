@@ -45,6 +45,7 @@ import acmecollege.ejb.StudentService;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
+import acmecollege.utility.ResponseCodes;
 
 /**
  * This class provides all the resources available to the REST API for 
@@ -80,8 +81,7 @@ public class StudentResource {
     public Response getStudents() {
         LOG.debug("retrieving all students ...");
         List<Student> students = service.getAll(Student.class, Student.ALL_STUDENTS_QUERY_NAME);
-        Response response = Response.ok(students).build();
-        return response;
+        return ResponseCodes.getAllResponse(students);
     }
 
     /**
@@ -100,7 +100,7 @@ public class StudentResource {
 
         if (sc.isCallerInRole(ADMIN_ROLE)) {
             student = service.getById(Student.class, Student.QUERY_STUDENT_BY_ID, id);
-            response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(student).build();
+            response = ResponseCodes.getOrDeleteResponse(student);
         } else if (sc.isCallerInRole(USER_ROLE)) {
             WrappingCallerPrincipal wCallerPrincipal = (WrappingCallerPrincipal) sc.getCallerPrincipal();
             SecurityUser sUser = (SecurityUser) wCallerPrincipal.getWrapped();
@@ -182,10 +182,7 @@ public class StudentResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteStudentById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	Student deletedStudent = null;
-    	Response response = null;
-    	deletedStudent = service.deleteStudentById( id);
-    	response = Response.ok(deletedStudent).build();
-    	return response;
+    	Student deletedStudent = service.deleteStudentById( id);
+    	return ResponseCodes.getOrDeleteResponse(deletedStudent);
     }
 }

@@ -52,6 +52,7 @@ import acmecollege.entity.CourseRegistrationPK;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
+import acmecollege.utility.ResponseCodes;
 
 /**
  * This class provides all the resources available to the REST API for 
@@ -87,8 +88,7 @@ public class CourseRegistrationResource {
 	public Response getCourseRegistrations() {
 		LOG.debug("retrieving all course registrations ...");
 		List<CourseRegistration> registrations = service.getAll(CourseRegistration.class, "CourseRegistration.findAll");
-		Response response = Response.ok(registrations).build();
-		return response;
+		return ResponseCodes.getAllResponse(registrations);
 	}
 
 	/**
@@ -159,11 +159,8 @@ public class CourseRegistrationResource {
 		id.setCourseId(courseId);
 		id.setStudentId(studentId);
 
-		Response response = null;
 		deletedRegistration = service.deleteRegistrationById(id);
-		response = Response.status(deletedRegistration == null ? Status.NOT_FOUND : Status.OK)
-				.entity(deletedRegistration).build();
-		return response;
+		return ResponseCodes.getOrDeleteResponse(deletedRegistration);
 	}
 
 	/**
@@ -193,9 +190,9 @@ public class CourseRegistrationResource {
 				registrations.forEach(registration -> {
 					courses.add(registration.getCourse());
 				});
-				response = Response.status(student == null ? Status.NOT_FOUND : Status.OK).entity(courses).build();
+				response = ResponseCodes.getAllResponse(courses);
 			} else {
-				response = Response.status(Status.NOT_FOUND).build();
+				response = ResponseCodes.getOrDeleteResponse(student);
 			}
 		} else if (sc.isCallerInRole(USER_ROLE)) {
 			WrappingCallerPrincipal wCallerPrincipal = (WrappingCallerPrincipal) sc.getCallerPrincipal();
@@ -206,7 +203,7 @@ public class CourseRegistrationResource {
 				registrations.forEach(registration -> {
 					courses.add(registration.getCourse());
 				});
-				response = Response.status(Status.OK).entity(courses).build();
+				response = ResponseCodes.getAllResponse(courses);
 			} else {
 				throw new ForbiddenException("User trying to access resource it does not own (wrong userid)");
 			}
@@ -228,20 +225,17 @@ public class CourseRegistrationResource {
 	@Path(COURSE_STUDENT_LIST_PATH)
 	public Response getCourseStudentList(@PathParam(RESOURCE_PATH_COURSE_ID) int id) {
 		LOG.debug("Get Student list for Course with id: " + id);
-		Response response = null;
-		Course course = null;
 		Set<CourseRegistration> registrations = new HashSet<>();
 		Set<Student> students = new HashSet<>();
-		course = service.getById(Course.class, Course.COURSE_BY_ID_QUERY, id);
+		Course course = service.getById(Course.class, Course.COURSE_BY_ID_QUERY, id);
 		if (course != null) {
 			registrations = course.getCourseRegistrations();
 			registrations.forEach(registration -> {
 				students.add(registration.getStudent());
 			});
-			response = Response.status(students == null ? Status.NOT_FOUND : Status.OK).entity(students).build();	
+			return ResponseCodes.getAllResponse(students);
 		} else {
-			response = Response.status(Status.NOT_FOUND).build();
+			return ResponseCodes.getOrDeleteResponse(course);
 		}
-		return response;
 	}
 }

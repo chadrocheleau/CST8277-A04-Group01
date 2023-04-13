@@ -62,6 +62,7 @@ import acmecollege.entity.MembershipCard;
 import acmecollege.entity.Professor;
 import acmecollege.entity.SecurityUser;
 import acmecollege.entity.Student;
+import acmecollege.utility.ResponseCodes;
 
 
 /**
@@ -95,8 +96,7 @@ public class MembershipCardResource {
     public Response getMembershipCards() {
         LOG.debug("retrieving all Membership Cards ...");
         List<MembershipCard> cards = service.getAll(MembershipCard.class, MembershipCard.ALL_CARDS_QUERY_NAME);
-        Response response = Response.ok(cards).build();
-        return response;
+        return ResponseCodes.getAllResponse(cards);
     }
     
     /**
@@ -186,10 +186,7 @@ public class MembershipCardResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteMembershipCardById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	MembershipCard deletedMembershipCard = null;
-    	Response response = null;
-    	deletedMembershipCard = service.deleteMembershipCardById(id);
-    	response = Response.ok(deletedMembershipCard).build();
-    	return response;
+    	MembershipCard deletedMembershipCard = service.deleteMembershipCardById(id);
+    	return ResponseCodes.getOrDeleteResponse(deletedMembershipCard);
     }
 }

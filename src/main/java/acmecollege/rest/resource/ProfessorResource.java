@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 
 import acmecollege.ejb.ProfessorService;
 import acmecollege.entity.Professor;
-
+import acmecollege.utility.ResponseCodes;
 
 import static acmecollege.utility.MyConstants.ADMIN_ROLE;
 import static acmecollege.utility.MyConstants.PROFESSOR_SUBRESOURCE_NAME;
@@ -79,8 +79,7 @@ public class ProfessorResource {
 	public Response getProfessors() {
 		LOG.debug("retrieving all professors...");
 		List<Professor> professors = service.getAll(Professor.class, "Professor.findAll");
-		Response response = Response.ok(professors).build();
-		return response;
+		return ResponseCodes.getAllResponse(professors);
 	}
 
 	/**
@@ -93,13 +92,8 @@ public class ProfessorResource {
 	@Path(RESOURCE_PATH_ID_PATH)
 	public Response getProfessorById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
 		LOG.debug("try to retrieve specific professor " + id);
-		Response response = null;
-		Professor professor = null;
-
-		professor = service.getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);
-		response = Response.status(professor == null ? Status.NOT_FOUND : Status.OK).entity(professor).build();
-
-		return response;
+		Professor professor = service.getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);
+		return ResponseCodes.getOrDeleteResponse(professor);
 	}
 	
 	/**
@@ -144,11 +138,7 @@ public class ProfessorResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteProfessorById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	
-    	Response response = null;
-    	Professor deletedProf = null;
-    	deletedProf = service.deleteById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);
-    	response = Response.status(deletedProf == null ? Status.NOT_FOUND : Status.OK).entity(deletedProf).build();
-    	return response;
+    	Professor deletedProf = service.deleteById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);
+    	return ResponseCodes.getOrDeleteResponse(deletedProf);
     }
 }

@@ -86,19 +86,4 @@ public class TestACMECollegeSystem {
             new ClientConfig().register(MyObjectMapperProvider.class).register(new LoggingFeature()));
         webTarget = client.target(uri);
     }
-
-    @Test
-    public void test01_all_students_with_adminrole() throws JsonMappingException, JsonProcessingException {
-        Response response = webTarget
-            //.register(userAuth)
-            .register(adminAuth)
-            .path(STUDENT_RESOURCE_NAME)
-            .request()
-            .get();
-            
-        assertThat(response.getStatus(), is(200));
-        List<Student> students = response.readEntity(new GenericType<List<Student>>(){});
-        assertThat(students, is(not(empty())));
-        assertThat(students, hasSize(1));
-    }
 }

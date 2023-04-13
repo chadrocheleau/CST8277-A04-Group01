@@ -138,7 +138,7 @@ public class ProfessorResource {
     @RolesAllowed({ADMIN_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteProfessorById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id ) {
-    	Professor deletedProf = service.deleteById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, id);
+    	Professor deletedProf = service.deleteProfessor(id);
     	return ResponseCodes.getOrDeleteResponse(deletedProf);
     }
 }

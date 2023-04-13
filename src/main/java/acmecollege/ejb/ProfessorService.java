@@ -13,9 +13,13 @@
  */
 package acmecollege.ejb;
 
+import java.util.Set;
+
 import javax.ejb.Singleton;
 import javax.transaction.Transactional;
-
+import acmecollege.entity.ClubMembership;
+import acmecollege.entity.CourseRegistration;
+import acmecollege.entity.MembershipCard;
 import acmecollege.entity.Professor;
 
 /**
@@ -46,4 +50,28 @@ public class ProfessorService extends ACMECollegeService {
 	    	}
 	        return entityToUpdate;
 	    }
+	 
+	 /**
+		 * Service that deletes a Professor. A Professor may be referenced by
+		 * a CourseRegistration, if so then the reference needs to be removed from the 
+		 * associated CourseRegistration (reference to Professor in CourseRegistration is optional)
+		 * @param clubMembershipId The id of the ClubMembership to be deleted
+		 * @return The deleted ClubMembership or null if the ClubMembership doesn't exist
+		 */
+		@Transactional
+		public Professor deleteProfessor(int professorId) {
+			Professor professor = getById(Professor.class, Professor.QUERY_PROFESSOR_BY_ID, professorId);
+			if (professor == null) { return professor; }
+			// There may be a MembershipCard that has this ClubMembership associated - must remove the reference before deleting
+			Set<CourseRegistration> registrations = professor.getCourseRegistrations();
+			if (!registrations.isEmpty()) { 
+				registrations.forEach(registration -> {
+					registration.setProfessor(null);
+				});
+			}
+			em.remove(professor);
+			em.flush();
+			return professor;
+		}
+
 }

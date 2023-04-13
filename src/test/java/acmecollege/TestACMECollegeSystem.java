@@ -17,6 +17,7 @@ import static acmecollege.utility.MyConstants.DEFAULT_ADMIN_USER_PASSWORD;
 import static acmecollege.utility.MyConstants.DEFAULT_USER;
 import static acmecollege.utility.MyConstants.DEFAULT_USER_PASSWORD;
 import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
+import static acmecollege.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,8 +30,10 @@ import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
@@ -100,5 +103,24 @@ public class TestACMECollegeSystem {
         List<Student> students = response.readEntity(new GenericType<List<Student>>(){});
         assertThat(students, is(not(empty())));
         assertThat(students, hasSize(1));
+    }
+    
+    @Test
+    public void test02_post_new_student_adminrole() throws JsonMappingException, JsonProcessingException {
+    	
+    	Student student = new Student();
+    	student.setFullName("Chad", "Rocheleau");
+
+        Response response = webTarget
+            //.register(userAuth)
+            .register(adminAuth)
+            .path(STUDENT_RESOURCE_NAME)
+            .request()
+            .post(Entity.entity(student, MediaType.APPLICATION_JSON));
+            
+        assertThat(response.getStatus(), is(200));
+//        Student returnedStudent = response.getEntity();
+//        assertThat(students, is(not(empty())));
+//        assertThat(students, hasSize(1));
     }
 }

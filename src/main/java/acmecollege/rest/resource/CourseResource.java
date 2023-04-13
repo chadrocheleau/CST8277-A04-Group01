@@ -71,7 +71,7 @@ public class CourseResource {
      * @return response containing the list of all Courses in the database
      */
 	@GET
-	@RolesAllowed({ ADMIN_ROLE })
+	@RolesAllowed({ ADMIN_ROLE, USER_ROLE })
 	public Response getCourses() {
 		LOG.debug("retrieving all courses...");
 		List<Course> courses = service.getAll(Course.class, Course.ALL_COURSES_QUERY);

@@ -8,8 +8,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import acmecollege.entity.AcademicStudentClub;
-import acmecollege.entity.ClubMembership;
-import acmecollege.entity.DurationAndStatus;
 import acmecollege.entity.NonAcademicStudentClub;
 import acmecollege.entity.StudentClub;
 
@@ -49,6 +47,8 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 
 	}
 
+	// user get object and 
+	
 //	@Test 
 //	@Order(1)
 //	public void get_all_student_clubs_with_adminrole() throws JsonMappingException, JsonProcessingException {

@@ -77,6 +77,7 @@ public class TestACMECollegeSystem {
   	protected static final int OK = 200;
   	protected static int NOT_FOUND = 404;
 
+
     @BeforeAll
     public static void oneTimeSetUp() throws Exception {
         logger.debug("oneTimeSetUp");

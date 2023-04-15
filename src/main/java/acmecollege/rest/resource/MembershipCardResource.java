@@ -127,7 +127,8 @@ public class MembershipCardResource {
                 	response = Response.status(Status.NOT_FOUND).build();
                 }
             } catch (Exception e) {
-            	Response.status(Status.NOT_FOUND).build();
+            	
+            	return ResponseCodes.getOrDeleteResponse(student); 
             }
             
         } else if (sc.isCallerInRole(USER_ROLE)) {

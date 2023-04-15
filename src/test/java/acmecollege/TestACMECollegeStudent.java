@@ -63,7 +63,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
         newStudent = new Student();
         updateStudent = new Student();
         
-        newStudent.setFullName(NEW_FIRST_NAME, NEW_LAST_NAME);;
+        newStudent.setFullName(NEW_FIRST_NAME, NEW_LAST_NAME);
         updateStudent.setFullName(UPDATE_FIRST_NAME, UPDATE_LAST_NAME);
     }
 	

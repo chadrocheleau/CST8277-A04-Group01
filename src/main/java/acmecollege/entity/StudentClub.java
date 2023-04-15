@@ -58,10 +58,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 //TODO SC01 - Add in JSON annotations to indicate different sub-classes of StudentClub
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
 				include = JsonTypeInfo.As.PROPERTY,
-				property = "club_type")
+				property = "academic")
 @JsonSubTypes({
-	@Type(value = AcademicStudentClub.class, name = "academic"),
-	@Type(value = NonAcademicStudentClub.class, name = "non-academic")
+	@Type(value = AcademicStudentClub.class, name = "1"),
+	@Type(value = NonAcademicStudentClub.class, name = "0")
 })
 public abstract class StudentClub extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -45,10 +45,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 /**
  * The persistent class for the student_club database table.
  */
-@Entity
+@Entity(name = "StudentClub")
 @Table(name = "student_club")
 @AttributeOverride(name="id", column=@Column(name = "club_id"))
-@NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
+@NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
 @NamedQuery(name = StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")
 @NamedQuery(name = StudentClub.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(sc) FROM StudentClub sc where sc.name = :param1")
 @NamedQuery(name = StudentClub.STUDENT_CLUB_QUERY_BY_ID, query = "SELECT sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")
@@ -58,10 +58,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 //TODO SC01 - Add in JSON annotations to indicate different sub-classes of StudentClub
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
 				include = JsonTypeInfo.As.PROPERTY,
-				property = "academic")
+				property = "club_type")
 @JsonSubTypes({
-	@Type(value = AcademicStudentClub.class, name = "1"),
-	@Type(value = NonAcademicStudentClub.class, name = "0")
+	@Type(value = AcademicStudentClub.class, name = "academic"),
+	@Type(value = NonAcademicStudentClub.class, name = "non-academic")
 })
 public abstract class StudentClub extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -107,6 +107,10 @@ public abstract class StudentClub extends PojoBase implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Boolean getIsAcademic() {
+		return isAcademic;
 	}
 
 	//Inherited hashCode/equals is NOT sufficient for this entity class

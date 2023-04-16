@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 /**
  * The persistent class for the student_club database table.
  */
-@Entity
+@Entity(name = "StudentClub")
 @Table(name = "student_club")
 @AttributeOverride(name="id", column=@Column(name = "club_id"))
 @NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
@@ -107,6 +107,10 @@ public abstract class StudentClub extends PojoBase implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Boolean getIsAcademic() {
+		return isAcademic;
 	}
 
 	//Inherited hashCode/equals is NOT sufficient for this entity class

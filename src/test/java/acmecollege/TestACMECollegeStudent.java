@@ -299,7 +299,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
             .request()
             .delete();
         
-        Student deletedStudent = response.readEntity(Student.class);
+        Student deletedStudent = response.readEntity(new GenericType<Student>(){});
         
         assertThat(response.getStatus(), is(OK));
         //deleting the record that was created and updated

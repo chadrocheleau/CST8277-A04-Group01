@@ -5,6 +5,7 @@ import static acmecollege.utility.MyConstants.COURSE_STUDENT_PROFESSOR_REG_RESOU
 import static acmecollege.utility.MyConstants.COURSE_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.PROFESSOR_SUBRESOURCE_NAME;
+import static acmecollege.utility.MyConstants.STUDENT_COURSE_LIST_PATH;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,6 +46,7 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	private static Professor newProfessor;
 	private static Student newStudent;
 	private static CourseRegistrationPK newCourseRegistrationId;
+	private static int newCourseId;
 
 	/**
 	 * Initializes two Professors to be used as entities for create and update
@@ -82,7 +84,6 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	public void get_all_courseregistrations_with_adminrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget
-				// .register(userAuth)
 				.register(adminAuth).path(COURSE_REGISTRATION_RESOURCE_NAME).request().get();
 
 		List<CourseRegistration> courseRegistrations = response.readEntity(new GenericType<List<CourseRegistration>>() {
@@ -102,13 +103,93 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	@Order(2)
 	public void get_all_courseregistrations_with_userrole() throws JsonMappingException, JsonProcessingException {
 
-		Response response = webTarget.register(userAuth).path(COURSE_REGISTRATION_RESOURCE_NAME).request().get();
+		Response response = webTarget
+				.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME)
+				.request()
+				.get();
 
+		assertThat(response.getStatus(), is(FORBIDDEN));
+	}
+	@Test
+	@Order(3)
+	public void get_courselist_with_adminrole() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+				.register(adminAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + COURSE_LIST_PATH + 
+						DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.get();
+		
+		List<Course> courses = response.readEntity(new GenericType<List<Course>>() {
+		});
+		
+		assertThat(response.getStatus(), is(OK));
+		assertThat(courses, is(not(empty())));
+	}
+	
+	@Test
+	@Order(4)
+	public void get_courselist_with_userrole_authenticated() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+				.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + COURSE_LIST_PATH + 
+						DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.get();
+		
+		List<Course> courses = response.readEntity(new GenericType<List<Course>>() {
+		});
+		
+		assertThat(response.getStatus(), is(OK));
+		assertThat(courses, is(not(empty())));
+	}
+	
+	@Test
+	@Order(5)
+	public void get_courselist_with_userrole_not_authenticated() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+				.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + COURSE_LIST_PATH + 
+						"/2")
+				.request()
+				.get();
+		
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
 	
 	@Test
-	@Order(3)
+	@Order(6)
+	public void get_studentlist_with_adminrole() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+				.register(adminAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + STUDENT_LIST_PATH + 
+						DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.get();
+		
+		List<Student> students = response.readEntity(new GenericType<List<Student>>() {
+		});
+		
+		assertThat(response.getStatus(), is(OK));
+		assertThat(students, is(not(empty())));
+	}
+	
+	@Test
+	@Order(7)
+	public void get_studentlist_with_userrole() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+				.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + STUDENT_LIST_PATH + 
+						DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.get();
+		
+		assertThat(response.getStatus(), is(FORBIDDEN));
+	}
+	
+	@Test
+	@Order(8)
 	public void post_new_courseregistration_adminrole() throws JsonMappingException, JsonProcessingException {
 		Response responseProfessor = webTarget
 		.register(adminAuth)
@@ -147,6 +228,7 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		assertThat(returnedCourseRegistration.getStudent(), is(returnedStudent));
 		assertThat(returnedCourseRegistration.getCourse(), is(returnedCourse));
 
+		newCourseId = returnedCourse.getId();
 		newCourseRegistrationId = returnedCourseRegistration.getId();
 	}
 
@@ -157,11 +239,11 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(4)
+	@Order(9)
 	public void post_new_courseregistration_userrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME).request()
-				.post(Entity.entity(newProfessor, MediaType.APPLICATION_JSON));
+				.post(Entity.entity(newCourseRegistration, MediaType.APPLICATION_JSON));
 
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
@@ -174,36 +256,60 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(9)
-	public void put_update_professor_adminrole() throws JsonMappingException, JsonProcessingException {
+	@Order(10)
+	public void put_update_coursereg_professor_adminrole() throws JsonMappingException, JsonProcessingException {
 
-		Response response = webTarget.register(adminAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
-				.request().put(Entity.entity(updateProfessor, MediaType.APPLICATION_JSON));
+		Response responseProfessor = webTarget
+		.register(adminAuth)
+		.path(PROFESSOR_SUBRESOURCE_NAME + DEFAULT_ID_PATH_FIRST_RECORD)
+		.request()
+		.get();
+		Professor updateProfessor = responseProfessor.readEntity(new GenericType<Professor>() {
+		});
+		
+		Response response = webTarget.register(adminAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + 
+						"/course/" + newCourseId + 
+						"/professor" + DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.put(Entity.entity(updateProfessor, MediaType.APPLICATION_JSON));
 
 		Professor returnedProfessor = response.readEntity(new GenericType<Professor>() {
 		});
 
 		assertThat(response.getStatus(), is(OK));
-		assertThat(returnedProfessor.getFirstName(), is(UPDATE_FIRST_NAME));
-		assertThat(returnedProfessor.getLastName(), is(UPDATE_LAST_NAME));
+		assertThat(returnedProfessor.getFirstName(), is(DEFAULT_PROFESSOR_FIRST_NAME));
+		assertThat(returnedProfessor.getLastName(), is(DEFAULT_PROFESSOR_LAST_NAME));
+		assertThat(returnedProfessor.getDepartment(), is(DEFAULT_PROFESSOR_DEPARTMENT));
 	}
-
+	
 	/**
-	 * This test tests the PUT /Professor/{id} Resource when using USER_ROLE to
-	 * update a Professor.
+	 * This test tests the PUT /Professor/{id} Resource when using ADMIN_ROLE to
+	 * update a Professor that does exist.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(10)
-	public void put_update_professor_userrole() throws JsonMappingException, JsonProcessingException {
+	@Order(11)
+	public void put_update_coursereg_professor_userrole() throws JsonMappingException, JsonProcessingException {
 
-		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
-				.request().put(Entity.entity(updateProfessor, MediaType.APPLICATION_JSON));
+		Response responseProfessor = webTarget
+		.register(userAuth)
+		.path(PROFESSOR_SUBRESOURCE_NAME + DEFAULT_ID_PATH_FIRST_RECORD)
+		.request()
+		.get();
+		Professor updateProfessor = responseProfessor.readEntity(new GenericType<Professor>() {
+		});
+		
+		Response response = webTarget.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + 
+						"/course/" + newCourseId + 
+						"/professor" + DEFAULT_ID_PATH_FIRST_RECORD)
+				.request()
+				.put(Entity.entity(updateProfessor, MediaType.APPLICATION_JSON));
 
 		assertThat(response.getStatus(), is(FORBIDDEN));
-
 	}
 
 	/**
@@ -214,20 +320,26 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(11)
-	public void delete_professor_adminrole() throws JsonMappingException, JsonProcessingException {
+	@Order(12)
+	public void delete_courseregistration_adminrole() throws JsonMappingException, JsonProcessingException {
 
-		Response response = webTarget.register(adminAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
-				.request().delete();
+		Response response = webTarget
+				.register(adminAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + "/" + 
+				STUDENT_RESOURCE_NAME + "/" + newCourseRegistrationId.getStudentId() + "/" +
+				COURSE_RESOURCE_NAME + "/" + newCourseRegistrationId.getCourseId())
+				.request()
+				.delete();
 
-		Professor deletedProfessor = response.readEntity(Professor.class);
+		CourseRegistration deletedCourseRegistration = response.readEntity(new GenericType<CourseRegistration>() {
+		});
 
 		assertThat(response.getStatus(), is(OK));
 		// deleting the record that was created and updated
 		// therefore the response should match the updated values of that record
-		assertThat(deletedProfessor.getFirstName(), is(UPDATE_FIRST_NAME));
-		assertThat(deletedProfessor.getLastName(), is(UPDATE_LAST_NAME));
-
+		assertThat(deletedCourseRegistration.getProfessor().getFirstName(), is(DEFAULT_PROFESSOR_FIRST_NAME));
+		assertThat(deletedCourseRegistration.getCourse().getCourseTitle(), is(newCourse.getCourseTitle()));
+		assertThat(deletedCourseRegistration.getStudent().getFirstName(), is(newStudent.getFirstName()));
 	}
 
 	/**
@@ -238,11 +350,16 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(12)
+	@Order(13)
 	public void delete_Professor_userrole() throws JsonMappingException, JsonProcessingException {
 
-		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
-				.request().delete();
+		Response response = webTarget
+				.register(userAuth)
+				.path(COURSE_REGISTRATION_RESOURCE_NAME + "/" + 
+				STUDENT_RESOURCE_NAME + "/" + newCourseRegistrationId.getStudentId() + "/" +
+				COURSE_RESOURCE_NAME + "/" + newCourseRegistrationId.getCourseId())
+				.request()
+				.delete();
 
 		assertThat(response.getStatus(), is(FORBIDDEN));
 
@@ -362,4 +479,14 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * Refers to id of the new record that these tests will create
 	 */
 	private final String DEFAULT_STUDENT_ID_PATH_NEW_RECORD = "/2";
+	
+	/**
+	 * 
+	 */
+	private final String COURSE_LIST_PATH = "/course/list/student";
+	
+	/**
+	 * 
+	 */
+	private final String STUDENT_LIST_PATH = "/student/list/course";
 }

@@ -1,17 +1,12 @@
 /**
  * File:  TestACMECollegeStudent.java
- * Course materials (23W) CST 8277
  *
- * @author Teddy Yap
- * @author Shariar (Shawn) Emami
- * @author (original) Mike Norman
+ * @author 041026625 Chad Rocheleau (as from ACSIS)
+ * @author 041020857 Lucas Ross (as from ACSIS)
+ * @author 041028658 Jacob Scott (as from ACSIS)
  * 
- * Updated by:  Group 01
- *   041026625, Chad, Rocheleau (as from ACSIS)
- *   41020857, Lucas, Ross (as from ACSIS)
- *   041028658, Jacob, Scott (as from ACSIS)
- *
  */
+
 package acmecollege;
 
 import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
@@ -63,7 +58,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
         newStudent = new Student();
         updateStudent = new Student();
         
-        newStudent.setFullName(NEW_FIRST_NAME, NEW_LAST_NAME);;
+        newStudent.setFullName(NEW_FIRST_NAME, NEW_LAST_NAME);
         updateStudent.setFullName(UPDATE_FIRST_NAME, UPDATE_LAST_NAME);
     }
 	
@@ -299,7 +294,7 @@ public class TestACMECollegeStudent extends TestACMECollegeSystem {
             .request()
             .delete();
         
-        Student deletedStudent = response.readEntity(Student.class);
+        Student deletedStudent = response.readEntity(new GenericType<Student>(){});
         
         assertThat(response.getStatus(), is(OK));
         //deleting the record that was created and updated

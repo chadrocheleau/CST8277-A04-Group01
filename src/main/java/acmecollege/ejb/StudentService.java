@@ -1,16 +1,12 @@
 /**
- * File:  StudentService.java Course materials (23W) CST 8277
+ * File:  StudentService.java
  *
- * @author Teddy Yap
- * @author Shariar (Shawn) Emami
- * @author (original) Mike Norman
- * 
- * Updated by:  Group 01
- *   041026625, Chad, Rocheleau (as from ACSIS)
- *   41020857, Lucas, Ross (as from ACSIS)
- *   041028658, Jacob, Scott (as from ACSIS)
+ * @author 041026625 Chad Rocheleau (as from ACSIS)
+ * @author 041020857 Lucas Ross (as from ACSIS)
+ * @author 041028658 Jacob Scott (as from ACSIS)
  * 
  */
+
 package acmecollege.ejb;
 
 import static acmecollege.utility.MyConstants.DEFAULT_KEY_SIZE;
@@ -24,6 +20,7 @@ import static acmecollege.utility.MyConstants.PROPERTY_ITERATIONS;
 import static acmecollege.utility.MyConstants.PROPERTY_KEY_SIZE;
 import static acmecollege.utility.MyConstants.PROPERTY_SALT_SIZE;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,10 +55,11 @@ public class StudentService extends ACMECollegeService {
     @Transactional
     public void buildUserForNewStudent(Student newStudent) {
         SecurityUser userForNewStudent = new SecurityUser();
-        String defaultUserName = DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName();
+        String timeStamp = LocalDateTime.now().toString();
+        String defaultUserName = DEFAULT_USER_PREFIX + "_" + newStudent.getFirstName() + "." + newStudent.getLastName() + timeStamp;
         userForNewStudent.setUsername(defaultUserName);
         // So long as duplicate user name doesn't exist in SecurityUser table then go ahead
-        if (!isDuplicated(userForNewStudent, SecurityUser.IS_DUPLICATE_QUERY_NAME, userForNewStudent.getUsername())) {
+//        if (!isDuplicated(userForNewStudent, SecurityUser.IS_DUPLICATE_QUERY_NAME, userForNewStudent.getUsername())) {
         	Map<String, String> pbAndjProperties = new HashMap<>();
             pbAndjProperties.put(PROPERTY_ALGORITHM, DEFAULT_PROPERTY_ALGORITHM);
             pbAndjProperties.put(PROPERTY_ITERATIONS, DEFAULT_PROPERTY_ITERATIONS);
@@ -80,7 +78,7 @@ public class StudentService extends ACMECollegeService {
             userForNewStudent.getRoles().add(userRole);
             userRole.getUsers().add(userForNewStudent);
             em.persist(userForNewStudent);
-        }
+//        }
         
     }
 

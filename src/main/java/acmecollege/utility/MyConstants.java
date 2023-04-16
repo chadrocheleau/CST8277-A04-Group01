@@ -4,6 +4,10 @@
  * @author Teddy Yap
  * @author Mike Norman
  *
+ * Updated by:  Group 01
+ *   041026625, Chad, Rocheleau (as from ACSIS)
+ *   041020857, Lucas, Ross (as from ACSIS)
+ *   041028658, Jacob, Scott (as from ACSIS)
  */
 package acmecollege.utility;
 

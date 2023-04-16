@@ -46,28 +46,40 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		newNonAcademicStudentClub.setName(NEW_NON_ACADEMIC_CLUB_NAME);
 
 	}
-
-	// user get object and 
 	
-//	@Test 
-//	@Order(1)
-//	public void get_all_student_clubs_with_adminrole() throws JsonMappingException, JsonProcessingException {
-//		Response response = webTarget
-//			.register(adminAuth)
-//			.path(STUDENT_CLUB_RESOURCE_NAME)
-//			.request()
-//			.get();
-//		
-//		List<StudentClub> sClubs = response.readEntity(new GenericType<List<StudentClub>>(){});
-//
-//		assertThat(response.getStatus(), is(OK));
-//		assertThat(sClubs, is(not(empty())));
-//	}
+	@Test 
+	@Order(1)
+	public void getAllStudentClubs_withAdminRole() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+			.register(adminAuth)
+			.path(STUDENT_CLUB_RESOURCE_NAME)
+			.request()
+			.get();
+		
+		List<Object> sClubs = response.readEntity(new GenericType<List<Object>>(){});
 
+		assertThat(response.getStatus(), is(OK));
+		assertThat(sClubs.size(), is(2));
+	}
+	
+	@Test 
+	@Order(2)
+	public void getAllStudentClubs_withUserRole() throws JsonMappingException, JsonProcessingException {
+		Response response = webTarget
+			.register(userAuth)
+			.path(STUDENT_CLUB_RESOURCE_NAME)
+			.request()
+			.get();
+		
+		List<Object> sClubs = response.readEntity(new GenericType<List<Object>>(){});
+
+		assertThat(response.getStatus(), is(OK));
+		assertThat(sClubs.size(), is(2));
+	}
 	
 	@Test
 	@Order(3)
-	public void getStudentClubByIdAsAdminRoleWithResults() throws JsonMappingException, JsonProcessingException {
+	public void getStudentClub_ById_AsAdminRole_WithResults() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 			.register(adminAuth)
@@ -83,7 +95,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(4)
-	public void getStudentClubByIdAsAdminRoleNoResults() throws JsonMappingException, JsonProcessingException {
+	public void getStudentClub_ById_AsAdminRole_NoResults() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 			.register(adminAuth)
@@ -96,7 +108,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(5)
-	public void getStudentClubByIdAsUserRoleWithResults() throws JsonMappingException, JsonProcessingException {
+	public void getStudentClub_ById_AsUserRole_WithResults() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 			.register(userAuth)
@@ -112,7 +124,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(6)
-	public void getStudentClubByIdAsUserRoleNoResults() throws JsonMappingException, JsonProcessingException {
+	public void getStudentClub_ById_AsUserRole_NoResults() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 			.register(userAuth)
@@ -125,7 +137,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(7)
-	public void postNewAcademicStudentClubAdminRole() throws JsonMappingException, JsonProcessingException {
+	public void postNewAcademicStudentClub_AdminRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(adminAuth)
@@ -143,7 +155,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 
 	@Test
 	@Order(8)
-	public void postNewAcademicStudentClubUserRole() throws JsonMappingException, JsonProcessingException {
+	public void postNewAcademicStudentClub_UserRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(userAuth)
@@ -156,7 +168,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(9)
-	public void postNewNonAcademicStudentClubAdminRole() throws JsonMappingException, JsonProcessingException {
+	public void postNewNonAcademicStudentClub_AdminRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(adminAuth)
@@ -174,7 +186,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 
 	@Test
 	@Order(10)
-	public void postNewNonAcademicStudentClubUserRole() throws JsonMappingException, JsonProcessingException {
+	public void postNewNonAcademicStudentClub_UserRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(userAuth)
@@ -187,7 +199,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(11)
-	public void deleteAcademicStudentClubAdminRole() throws JsonMappingException, JsonProcessingException {
+	public void deleteAcademicStudentClub_AdminRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(adminAuth)
@@ -204,7 +216,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(12)
-	public void deleteAcademicStudentClubUserRole() throws JsonMappingException, JsonProcessingException {
+	public void deleteAcademicStudentClub_UserRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(userAuth)
@@ -217,7 +229,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(13)
-	public void deleteNonAcademicStudentClubAdminRole() throws JsonMappingException, JsonProcessingException {
+	public void deleteNonAcademicStudentClub_AdminRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(adminAuth)
@@ -234,7 +246,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 	
 	@Test
 	@Order(14)
-	public void deleteNonAcademicStudentClubUserRole() throws JsonMappingException, JsonProcessingException {
+	public void deleteNonAcademicStudentClub_UserRole() throws JsonMappingException, JsonProcessingException {
 		
 		Response response = webTarget
 				.register(userAuth)

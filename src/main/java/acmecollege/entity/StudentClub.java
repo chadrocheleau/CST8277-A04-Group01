@@ -48,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @Entity(name = "StudentClub")
 @Table(name = "student_club")
 @AttributeOverride(name="id", column=@Column(name = "club_id"))
-@NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
+@NamedQuery(name = StudentClub.ALL_STUDENT_CLUBS_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships")
 @NamedQuery(name = StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, query = "SELECT distinct sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")
 @NamedQuery(name = StudentClub.IS_DUPLICATE_QUERY_NAME, query = "SELECT count(sc) FROM StudentClub sc where sc.name = :param1")
 @NamedQuery(name = StudentClub.STUDENT_CLUB_QUERY_BY_ID, query = "SELECT sc FROM StudentClub sc left JOIN FETCH sc.clubMemberships where sc.id = :param1")

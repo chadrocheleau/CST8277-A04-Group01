@@ -1,3 +1,12 @@
+/**
+ * File:  TestACMECollegeProfessor.java
+ *
+ * @author 041026625 Chad Rocheleau (as from ACSIS)
+ * @author 041020857 Lucas Ross (as from ACSIS)
+ * @author 041028658 Jacob Scott (as from ACSIS)
+ * 
+ */
+
 package acmecollege;
 
 import static acmecollege.utility.MyConstants.PROFESSOR_SUBRESOURCE_NAME;
@@ -23,6 +32,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import acmecollege.entity.Professor;
 
+/**
+ * This test suite tests the ACME College API for the Professor Entity 
+ * of the ACME College System. This test suite uses TestMethodOrder
+ * to ensure that the tests are run in a particular order as some tests 
+ * may change expected results of other tests depending on the order
+ * in which they are run.
+ * @author decen
+ *
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	private static Professor newProfessor;

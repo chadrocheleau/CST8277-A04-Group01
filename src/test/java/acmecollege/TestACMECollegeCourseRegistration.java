@@ -1,11 +1,18 @@
+/**
+ * File:  TestACMECollegeCourseRegistration.java
+ *
+ * @author 041026625 Chad Rocheleau (as from ACSIS)
+ * @author 041020857 Lucas Ross (as from ACSIS)
+ * @author 041028658 Jacob Scott (as from ACSIS)
+ * 
+ */
+
 package acmecollege;
 
 import static acmecollege.utility.MyConstants.COURSE_REGISTRATION_RESOURCE_NAME;
-import static acmecollege.utility.MyConstants.COURSE_STUDENT_PROFESSOR_REG_RESOURCE_PATH;
 import static acmecollege.utility.MyConstants.COURSE_RESOURCE_NAME;
-import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
 import static acmecollege.utility.MyConstants.PROFESSOR_SUBRESOURCE_NAME;
-import static acmecollege.utility.MyConstants.STUDENT_COURSE_LIST_PATH;
+import static acmecollege.utility.MyConstants.STUDENT_RESOURCE_NAME;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,17 +20,12 @@ import static org.hamcrest.collection.IsEmptyCollection.empty;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.transaction.Transactional;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -38,10 +40,18 @@ import acmecollege.entity.CourseRegistrationPK;
 import acmecollege.entity.Professor;
 import acmecollege.entity.Student;
 
+/**
+ * This test suite tests the ACME College API for the CourseRegistration Entity 
+ * of the ACME College System. This test suite uses TestMethodOrder
+ * to ensure that the tests are run in a particular order as some tests 
+ * may change expected results of other tests depending on the order
+ * in which they are run.
+ * @author decen
+ *
+ */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	private static CourseRegistration newCourseRegistration;
-	private static CourseRegistration updateCourseRegistration;
 	private static Course newCourse;
 	private static Professor newProfessor;
 	private static Student newStudent;
@@ -49,8 +59,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	private static int newCourseId;
 
 	/**
-	 * Initializes two Professors to be used as entities for create and update
-	 * operations
+	 * Initializes professor, student, course, and course registration
+	 * to be used in post and put operations
 	 * 
 	 * @throws Exception
 	 */
@@ -58,7 +68,6 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	public static void initTestEntities() throws Exception {
 		
 		newCourseRegistration = new CourseRegistration();
-		updateCourseRegistration = new CourseRegistration();
 		newProfessor = new Professor();
 		newCourse = new Course();
 		newStudent = new Student();
@@ -74,7 +83,7 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests GET /Professor end point when accessed by user in ADMIN_ROLE.
+	 * This test tests GET /CourseRegistration end point when accessed by user in ADMIN_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -94,7 +103,7 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests GET /Professor end point when accessed by user in USER_ROLE.
+	 * This test tests GET /CourseRegistration end point when accessed by user in USER_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -111,6 +120,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
+	/**
+	 * This test tests GET /CourseRegistration/course/list/student/{id} end point when accessed by 
+	 * user in ADMIN_ROLE.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(3)
 	public void get_courselist_with_adminrole() throws JsonMappingException, JsonProcessingException {
@@ -127,7 +143,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		assertThat(response.getStatus(), is(OK));
 		assertThat(courses, is(not(empty())));
 	}
-	
+	/**
+	 * This test tests GET /CourseRegistration/course/list/student/{id} end point when accessed by 
+	 * user in USER_ROLE using their own student ID.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(4)
 	public void get_courselist_with_userrole_authenticated() throws JsonMappingException, JsonProcessingException {
@@ -144,7 +166,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		assertThat(response.getStatus(), is(OK));
 		assertThat(courses, is(not(empty())));
 	}
-	
+	/**
+	 * This test tests GET /CourseRegistration/course/list/student/{id} end point when accessed by 
+	 * user in USER_ROLE using someone else's student ID.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(5)
 	public void get_courselist_with_userrole_not_authenticated() throws JsonMappingException, JsonProcessingException {
@@ -157,7 +185,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
-	
+	/**
+	 * This test tests GET /CourseRegistration/student/list/course/{id} end point when accessed by 
+	 * user in ADMIN_ROLE.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(6)
 	public void get_studentlist_with_adminrole() throws JsonMappingException, JsonProcessingException {
@@ -174,7 +208,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		assertThat(response.getStatus(), is(OK));
 		assertThat(students, is(not(empty())));
 	}
-	
+	/**
+	 * This test tests GET /CourseRegistration/student/list/course/{id} end point when accessed by 
+	 * user in USER_ROLE.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(7)
 	public void get_studentlist_with_userrole() throws JsonMappingException, JsonProcessingException {
@@ -187,7 +227,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 		
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
-	
+	/**
+	 * This test tests POST /CourseRegistration end point when accessed by 
+	 * user in ADMIN_ROLE.
+	 * 
+	 * @throws JsonMappingException
+	 * @throws JsonProcessingException
+	 */
 	@Test
 	@Order(8)
 	public void post_new_courseregistration_adminrole() throws JsonMappingException, JsonProcessingException {
@@ -233,7 +279,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests POST /Professor end point when accessed by user in USER_ROLE.
+	 * This test tests POST /CourseRegistration end point when accessed by 
+	 * user in USER_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -249,8 +296,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests the PUT /Professor/{id} Resource when using ADMIN_ROLE to
-	 * update a Professor that does exist.
+	 * This test tests PUT /CourseRegistration /course/{id}/professor/{id} end point when accessed by 
+	 * user in ADMIN_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -284,8 +331,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 	
 	/**
-	 * This test tests the PUT /Professor/{id} Resource when using ADMIN_ROLE to
-	 * update a Professor that does exist.
+	 * This test tests PUT /CourseRegistration /course/{id}/professor/{id} end point when accessed by 
+	 * user in USER_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -313,8 +360,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests the DELETE /Professor/{id} Resource when using ADMIN_ROLE to
-	 * delete a Professor.
+	 * This test tests DELETE /CourseRegistration /{id} end point when accessed by 
+	 * user in ADMIN_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -343,8 +390,8 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	/**
-	 * This test tests the DELETE /Professor/{id} Resource when using USER_ROLE to
-	 * delete a Professor.
+	 * This test tests DELETE /CourseRegistration /{id} end point when accessed by 
+	 * user in USER_ROLE.
 	 * 
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
@@ -366,16 +413,6 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	}
 
 	// *********************** CONSTANTS ******************************
-    /**
-	 * Sample data provides first Student Record with this First Name
-	 */
-	private static final String DEFAULT_STUDENT_FIRST_NAME = "John";
-	
-	/**
-	 * Sample data provides first Student Record with this First Name
-	 */
-	private static final String DEFAULT_STUDENT_LAST_NAME = "Smith";
-	
 	/**
 	 * Used For Creating New Student
 	 */
@@ -414,17 +451,6 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * Used for Creating New Professor
 	 */
 	private static final String NEW_PROFESSOR_DEPARTMENT = "Geography Department";
-	
-  	/**
-  	 * These are the values of the default Course provided as record 1
-  	 */
-  	private static final String DEFAULT_COURSE_CODE = "CST8277";
-  	private static final String DEFAULT_COURSE_TITLE = "Enterprise Application Programming";
-  	private static final int DEFAULT_COURSE_YEAR = 2022;
-  	private static final String DEFAULT_COURSE_SEMESTER = "AUTUMN";
-  	private static final int DEFAULT_COURSE_UNITS = 3;
-  	private static final byte DEFAULT_COURSE_ONLINE = (byte) 0;
-  	
   	/**
   	 * These are the values of the newCourse Entity of Course being created
   	 */
@@ -439,54 +465,13 @@ public class TestACMECollegeCourseRegistration extends TestACMECollegeSystem {
 	 * Refers to id of first record provided by sample data
 	 */
 	private final String DEFAULT_ID_PATH_FIRST_RECORD = "/1";
-
 	/**
-	 * Refers to id of the new record that these tests will create
-	 */
-	private final String DEFAULT_ID_PATH_NEW_RECORD = "/3";
-
-	/**
-	 * Refers to id of a surely non existent Entity when needing to get no results
-	 */
-	private final String DEFAULT_ID_PATH_NO_RECORD = "/20";
-	
-    /**  
-     * Refers to id of first record provided by sample data
-  	 */
-  	private final String DEFAULT_COURSE_ID_PATH_FIRST_RECORD = "/1";
-  	
-  	/**
-  	 * Refers to id of the new record that these tests will create
-  	 */
-  	private final String DEFAULT_COURSE_ID_PATH_NEW_RECORD = "/3";
-  	
-	/**
-	 * Refers to id of first record provided by sample data
-	 */
-	private final String DEFAULT_PROFESSOR_ID_PATH_FIRST_RECORD = "/1";
-
-	/**
-	 * Refers to id of the new record that these tests will create
-	 */
-	private final String DEFAULT_PROFESSOR_ID_PATH_NEW_RECORD = "/2";
-	
-	/**
-	 * Refers to id of first record provided by sample data
-	 */
-	private final String DEFAULT_STUDENT_ID_PATH_FIRST_RECORD = "/1";
-	
-	/**
-	 * Refers to id of the new record that these tests will create
-	 */
-	private final String DEFAULT_STUDENT_ID_PATH_NEW_RECORD = "/2";
-	
-	/**
-	 * 
+	 * Path for course list by student ID path
 	 */
 	private final String COURSE_LIST_PATH = "/course/list/student";
 	
 	/**
-	 * 
+	 * Path for student list by course ID path
 	 */
 	private final String STUDENT_LIST_PATH = "/student/list/course";
 }

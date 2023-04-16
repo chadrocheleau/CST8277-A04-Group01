@@ -1,17 +1,12 @@
 /**
- * File:  TestACMECollegeStudent.java
- * Course materials (23W) CST 8277
+ * File:  TestACMECollegeCourse.java
  *
- * @author Teddy Yap
- * @author Shariar (Shawn) Emami
- * @author (original) Mike Norman
+ * @author 041026625 Chad Rocheleau (as from ACSIS)
+ * @author 041020857 Lucas Ross (as from ACSIS)
+ * @author 041028658 Jacob Scott (as from ACSIS)
  * 
- * Updated by:  Group 01
- *   041026625, Chad, Rocheleau (as from ACSIS)
- *   41020857, Lucas, Ross (as from ACSIS)
- *   041028658, Jacob, Scott (as from ACSIS)
- *
  */
+
 package acmecollege;
 
 import static acmecollege.utility.MyConstants.COURSE_RESOURCE_NAME;

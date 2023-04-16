@@ -94,16 +94,15 @@ public class ClubMembershipResource  {
      * Resource for adding a new ClubMembership. A StudentClub is needed in order to create 
      * a new ClubMembership
      * @param scId The id of the StudentClub for which this ClubMembership will be created.
-     * @param newClubMembership
      * @return response containing the ClubMembership that was created
      * TODO add logic for returning null if operation is not performed.
      */
     @RolesAllowed({ADMIN_ROLE})
     @POST
     @Path(CLUBMEMBERSHIP_CLUB_ID_PATH)
-	 public Response addClubMembership(@PathParam(RESOURCE_PATH_STUDENT_CLUB_ID) int scId, ClubMembership newClubMembership) {
-        LOG.debug("Adding a new club membership= {}", newClubMembership);
-        ClubMembership tempCM = service.persistClubMembership(newClubMembership, scId);
+	 public Response addClubMembership(@PathParam(RESOURCE_PATH_STUDENT_CLUB_ID) int scId) {
+        LOG.debug("Adding a new club membership for = {}", scId);
+        ClubMembership tempCM = service.persistClubMembership(scId);
         return Response.ok(tempCM).build();
     }
     

@@ -26,27 +26,27 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.annotation.Testable;
 
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 
-	private static Student newStudent;
-//	private static AcademicStudentClub newAcademicStudentClub;
-//	private static ClubMembership newClubMembership;
-//	private static MembershipCard newMembershipCard;
+	private static Student firstStudent;
+	private static int postedMembershipCardID;
 	
 	@BeforeAll
 	public static void initTestEntities() throws Exception {
 
-		newStudent = new Student();
-		newStudent.setFullName(DEFAULT_STUDENT_FIRST_NAME, DEFAULT_STUDENT_LAST_NAME);
+		firstStudent = new Student();
+		firstStudent.setFullName(STUDENT_1_FIRST_NAME, STUDENT_1_LAST_NAME);
 
-//		newAcademicStudentClub = new AcademicStudentClub();
-//		newAcademicStudentClub.setName(NEW_ACADEMIC_CLUB_NAME);
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 
 		Response response = webTarget
 				.register(adminAuth)
-				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + DEFAULT_ID_PATH_MEMBERSHIP_CARD_NEW)
+				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + ID_PATH_1)
 				.request()
 				.get();
 
@@ -102,7 +102,7 @@ public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 
 		Response response = webTarget
 				.register(adminAuth)
-				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + DEFAULT_ID_PATH_MEMBERSHIP_CARD_NO_RECORD)
+				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + ID_PATH_2)
 				.request()
 				.get();
 
@@ -115,7 +115,7 @@ public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 
 		Response response = webTarget
 				.register(userAuth)
-				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + DEFAULT_ID_PATH_MEMBERSHIP_CARD_NEW)
+				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + ID_PATH_1)
 				.request()
 				.get();
 
@@ -131,7 +131,7 @@ public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 
 		Response response = webTarget
 				.register(userAuth)
-				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + DEFAULT_ID_PATH_MEMBERSHIP_CARD_NO_RECORD)
+				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + CARD_STUDENT_LIST_ID_PATH + ID_PATH_2)
 				.request()
 				.get();
 
@@ -141,71 +141,83 @@ public class TestACMECollegeMembershipCard extends TestACMECollegeSystem {
 	@Test
 	@Order(7)
 	public void postNewMembershipCard_AdminRole() throws JsonMappingException, JsonProcessingException {
-
-		Response responseStudent = webTarget
-				.register(adminAuth)
-				.path(STUDENT_RESOURCE_NAME)
-				.request()
-				.post(Entity.entity(newStudent, MediaType.APPLICATION_JSON));
 		
-		Student returnedStudent = responseStudent.readEntity(new GenericType<Student>() {});
-
 		Response response = webTarget
-				.register(adminAuth)
-				.path(STUDENT_CLUB_RESOURCE_NAME + DEFAULT_ID_PATH_STUDENT_CLUB_NEW)
-				.request()
-				.get();
+			.register(adminAuth)
+			.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + 
+					STUDENT_RESOURCE_NAME + ID_PATH_1 + "/" + 
+					STUDENT_CLUB_RESOURCE_NAME + ID_PATH_1)
+			.request()
+			.post(Entity.entity(firstStudent, MediaType.APPLICATION_JSON));
+		
+		MembershipCard createdMembershipCard = response.readEntity(new GenericType<MembershipCard>() {});
 
-		StudentClub returnedStudentClub = response.readEntity(new GenericType<StudentClub>(){});
+		assertThat(response.getStatus(), is(OK));
+		assertThat(createdMembershipCard.getOwner().getFirstName(), is(STUDENT_1_FIRST_NAME));
+		assertThat(createdMembershipCard.getOwner().getLastName(), is(STUDENT_1_LAST_NAME));
+		assertThat(createdMembershipCard.getMembership().getStudentClub().getName(), is(CLUB_1));
 		
-//		Response responseStudentClub = webTarget
-//				.register(adminAuth)
-//				.path(STUDENT_CLUB_RESOURCE_NAME)
-//				.request()
-//				.post(Entity.entity(newAcademicStudentClub, MediaType.APPLICATION_JSON));
-//		
-//		AcademicStudentClub returnedStudentClub = responseStudentClub.readEntity(new GenericType<AcademicStudentClub>() {});
-//
-//		newClubMembership = new ClubMembership();
-//		newClubMembership.setStudentClub(returnedStudentClub);
-//		
-//		Response responseClubMembership = webTarget
-//				.register(adminAuth)
-//				.path(CLUB_MEMBERSHIP_RESOURCE_NAME)
-//				.request()
-//				.post(Entity.entity(newClubMembership, MediaType.APPLICATION_JSON));
-//		
-//		ClubMembership returnedClubMembership = responseClubMembership.readEntity(new GenericType<ClubMembership>() {});
-//
-//		newMembershipCard = new MembershipCard();
-//		newMembershipCard.setClubMembership(returnedClubMembership);
-//		newMembershipCard.setOwner(newStudent);
-//		newMembershipCard.setSigned(true);
+		postedMembershipCardID = createdMembershipCard.getId();
 		
-//		Response responseMembershipCard = webTarget
-//				.register(adminAuth)
-//				.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + 
-//						STUDENT_RESOURCE_NAME + "/" + returnedStudent.getId() + 
-//						CLUB_MEMBERSHIP_RESOURCE_NAME + "/" + returnedClubMembership.getId())
-//				.request()
-//				.post(Entity.entity(newMembershipCard, MediaType.APPLICATION_JSON));
-//		
-//		MembershipCard createdMembershipCard = responseMembershipCard.readEntity(new GenericType<MembershipCard>() {});
-//
-//		assertThat(responseMembershipCard.getStatus(), is(OK));
-//		assertThat(createdMembershipCard.getOwner(), is(returnedStudent));
-//		assertThat(createdMembershipCard.getMembership(), is(returnedClubMembership));
+	}
+	
+	@Test
+	@Order(7)
+	public void postNewMembershipCard_UserRole() throws JsonMappingException, JsonProcessingException {
+		
+		Response response = webTarget
+			.register(userAuth)
+			.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + 
+					STUDENT_RESOURCE_NAME + ID_PATH_1 + "/" + 
+					STUDENT_CLUB_RESOURCE_NAME + ID_PATH_1)
+			.request()
+			.post(Entity.entity(firstStudent, MediaType.APPLICATION_JSON));
+		
+		assertThat(response.getStatus(), is(FORBIDDEN));
+		
+	}
+	
+	@Test
+	@Order(8)
+	public void deleteMembershipCard_AdminRole() throws JsonMappingException, JsonProcessingException {
+		
+		Response response = webTarget
+			.register(adminAuth)
+			.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + postedMembershipCardID)
+			.request()
+			.delete();
+		
+		MembershipCard deletedMembershipCard = response.readEntity(new GenericType<MembershipCard>() {});
+
+		assertThat(response.getStatus(), is(OK));
+		assertThat(deletedMembershipCard.getOwner().getFirstName(), is(STUDENT_1_FIRST_NAME));
+		assertThat(deletedMembershipCard.getOwner().getLastName(), is(STUDENT_1_LAST_NAME));
+		assertThat(deletedMembershipCard.getMembership().getStudentClub().getName(), is(CLUB_1));
+		
+	}
+	
+	@Test
+	@Order(9)
+	public void deleteMembershipCard_UserRole() throws JsonMappingException, JsonProcessingException {
+		
+		Response response = webTarget
+			.register(userAuth)
+			.path(MEMBERSHIP_CARD_RESOURCE_NAME + "/" + postedMembershipCardID)
+			.request()
+			.delete();
+		
+		assertThat(response.getStatus(), is(FORBIDDEN));
+		
 	}
 
 	// *********************** CONSTANTS ******************************
 
-	private static final String DEFAULT_STUDENT_FIRST_NAME = "John";
-	private static final String DEFAULT_STUDENT_LAST_NAME = "Smith";
+	private static final String STUDENT_1_FIRST_NAME = "John";
+	private static final String STUDENT_1_LAST_NAME = "Smith";
 
-	private static final String NEW_ACADEMIC_CLUB_NAME = "New Student Club";
-	private final String DEFAULT_ID_PATH_STUDENT_CLUB_NEW = "/2";
+	private static final String CLUB_1 = "Computer Programming Club";
 	
-	private final String DEFAULT_ID_PATH_MEMBERSHIP_CARD_NEW = "/1";
-	private final String DEFAULT_ID_PATH_MEMBERSHIP_CARD_NO_RECORD = "/2";
+	private static final String ID_PATH_1 = "/1";
+	private static final String ID_PATH_2 = "/2";
 	
 }

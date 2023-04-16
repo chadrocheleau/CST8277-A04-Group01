@@ -83,14 +83,14 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		
 		Response response = webTarget
 			.register(adminAuth)
-			.path(STUDENT_CLUB_RESOURCE_NAME + DEFAULT_ID_PATH_STUDENT_CLUB_NEW)
+			.path(STUDENT_CLUB_RESOURCE_NAME + ID_PATH_2)
 			.request()
 			.get();
 
 		StudentClub returnedStudentClub = response.readEntity(new GenericType<StudentClub>(){});
 
 		assertThat(response.getStatus(), is(OK));
-		assertThat(returnedStudentClub.getName(), is(DEFAULT_STUDENT_CLUB_NAME));
+		assertThat(returnedStudentClub.getName(), is(CLUB_2));
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		
 		Response response = webTarget
 			.register(adminAuth)
-			.path(STUDENT_CLUB_RESOURCE_NAME + DEFAULT_ID_PATH_STUDENT_CLUB_NO_RECORD)
+			.path(STUDENT_CLUB_RESOURCE_NAME + ID_PATH_20)
 			.request()
 			.get();
 
@@ -112,14 +112,14 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		
 		Response response = webTarget
 			.register(userAuth)
-			.path(STUDENT_CLUB_RESOURCE_NAME + DEFAULT_ID_PATH_STUDENT_CLUB_NEW)
+			.path(STUDENT_CLUB_RESOURCE_NAME + ID_PATH_2)
 			.request()
 			.get();
 
 		StudentClub returnedStudentClub = response.readEntity(new GenericType<StudentClub>(){});
 
 		assertThat(response.getStatus(), is(OK));
-		assertThat(returnedStudentClub.getName(), is(DEFAULT_STUDENT_CLUB_NAME));
+		assertThat(returnedStudentClub.getName(), is(CLUB_2));
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		
 		Response response = webTarget
 			.register(userAuth)
-			.path(STUDENT_CLUB_RESOURCE_NAME + DEFAULT_ID_PATH_STUDENT_CLUB_NO_RECORD)
+			.path(STUDENT_CLUB_RESOURCE_NAME + ID_PATH_20)
 			.request()
 			.get();
 
@@ -257,11 +257,10 @@ public class TestACMECollegeStudentClub extends TestACMECollegeSystem {
 		assertThat(response.getStatus(), is(FORBIDDEN));
 	}
 	
-	private final String DEFAULT_ID_PATH_STUDENT_CLUB_NEW = "/2";	
-	private final String DEFAULT_STUDENT_CLUB_NAME = "Mountain Hiking Club";
-	private final String DEFAULT_ID_PATH_STUDENT_CLUB_NO_RECORD = "/20";
-	
-	// These are the values used for the newStudentClub Entity:
+	private static final String ID_PATH_2 = "/2";
+	private static final String ID_PATH_20 = "/20";
+	private static final String CLUB_2 = "Mountain Hiking Club";
 	private static final String NEW_ACADEMIC_CLUB_NAME = "New Student Club";
 	private static final String NEW_NON_ACADEMIC_CLUB_NAME = "New Non Academic Student Club";
+
 }

@@ -13,6 +13,7 @@
  */
 package acmecollege.ejb;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import javax.transaction.Transactional;
 import acmecollege.entity.ClubMembership;
 import acmecollege.entity.Course;
 import acmecollege.entity.CourseRegistration;
+import acmecollege.entity.DurationAndStatus;
 import acmecollege.entity.MembershipCard;
 import acmecollege.entity.Professor;
 import acmecollege.entity.StudentClub;
@@ -39,15 +41,21 @@ public class ClubMembershipService extends ACMECollegeService {
 
 	/**
 	 * Service that persists a ClubMembership
-	 * @param newClubMembership The new ClubMembership to be persisted
 	 * @param scId The id of the StudentClub required to persist a new ClubMembership
 	 * @return The persisted ClubMembership or null if the operation failed.
 	 */
 	@Transactional
-	public ClubMembership persistClubMembership(ClubMembership newClubMembership, int scId) {
+	public ClubMembership persistClubMembership(int scId) {
+		ClubMembership newClubMembership = new ClubMembership();
+		
 		StudentClub studentClub = getById(StudentClub.class, StudentClub.SPECIFIC_STUDENT_CLUB_QUERY_NAME, scId);
 		if (studentClub == null) { return null; } // If the student club doesn't exist then can't make ClubMembership
 		newClubMembership.setStudentClub(studentClub);
+
+		DurationAndStatus ds = new DurationAndStatus();
+		ds.setDurationAndStatus(LocalDateTime.now(), LocalDateTime.now().plusYears(1), "+");
+		newClubMembership.setDurationAndStatus(ds);
+
 		em.persist(newClubMembership);
 		em.flush();
 		return newClubMembership;

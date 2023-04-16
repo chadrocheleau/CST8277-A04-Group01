@@ -173,7 +173,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(7)
+	@Order(6)
 	public void post_new_professor_adminrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(adminAuth).path(PROFESSOR_SUBRESOURCE_NAME).request()
@@ -196,7 +196,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(8)
+	@Order(7)
 	public void post_new_professor_userrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME).request()
@@ -213,7 +213,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(9)
+	@Order(8)
 	public void put_update_professor_adminrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(adminAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
@@ -235,7 +235,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(10)
+	@Order(9)
 	public void put_update_professor_userrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
@@ -253,7 +253,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(11)
+	@Order(10)
 	public void delete_professor_adminrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(adminAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
@@ -277,7 +277,7 @@ public class TestACMECollegeProfessor extends TestACMECollegeSystem {
 	 * @throws JsonProcessingException
 	 */
 	@Test
-	@Order(12)
+	@Order(11)
 	public void delete_Professor_userrole() throws JsonMappingException, JsonProcessingException {
 
 		Response response = webTarget.register(userAuth).path(PROFESSOR_SUBRESOURCE_NAME + "/" + newProfessorId)
